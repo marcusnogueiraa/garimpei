@@ -1,36 +1,51 @@
-# :checkered_flag: NOME DO PROJETO
+# :checkered_flag: Garimpei
 
-Breve descrição do que o seu projeto faz.
+Uma loja virtual para vendedores de brechó
 
 ## :technologist: Membros da equipe
 
-Matrícula, nome e curso dos participantes.
+Marcus Vinicius Alves Nogueira, Engenharia de Computação, 540230
 
 ## :bulb: Objetivo Geral
-Descrever o objetivo de geral do projeto
+Desenvolver uma plataforma digital que funcione como um e-commerce colaborativo, conectando vendedores de brechós a consumidores interessados em produtos de segunda mão. O objetivo é fomentar a economia circular, apoiar pequenos empreendedores e promover o consumo consciente, oferecendo um espaço acessível, seguro e intuitivo para compra e venda de itens sustentáveis e exclusivos.
 
 ## :eyes: Público-Alvo
-Público-alvo do projeto
+Pequenos Empreendedores e Comerciantes.
 
 ## :star2: Impacto Esperado
-Descreva o impacto esperado do projeto em relação ao público alvo
+O objetivo é a ampliação do alcance de vendas, fortalecimento financeiro e a profissionalização do negócio dos vendedores de brechó. Além de aumentar o acesso aos produtos e facilitar a compra por meio dos compradores, promovendo a sustentabilidade e a reutilização, reduzindo o desperdício e o impacto ambiental da prrodução de novos bens.
 
 ## :people_holding_hands: Papéis ou tipos de usuário da aplicação
 
-Informe aqui os tipos de usuário que irão interagir com a aplicação. Ex: administrador, locador, locatario, usuário não logado.
-
-> Tenha em mente que obrigatoriamente a aplicação deve possuir funcionalidades acessíveis a todos os tipos de usuário e outra funcionalidades restritas a certos tipos de usuários.
+> Usuário não autenticado
+> Cliente
+> Vendedor
 
 ## :triangular_flag_on_post:	 Principais funcionalidades da aplicação
 
-Descreve ou liste brevemente as principais funcionalidades da aplicação que será desenvolvida. Destaque a funcionalidades que serão acessévies a todos os usuários e aquelas restriras a usuários logados.
+> Visualizar e buscar produtos (todos)
+> Visualizar lojas (todos)
+> Adcionar ao carrinho (cliente e vendedor)
+> Realizar compra (cliente e vendedor)
+> Cadastrar produto (vendedor)
+> Gerenciar lojas (vendedor)
+> Gerenciar produtos (vendedor)
+> Visualizar estoque (vendedor)
+> Visualizar histórico de vendas (vendedor)
+> Avaliar produto (cliente)
+> Visualizar avaliações (todos)
+> Gerenciar cupoms (vendedor)
 
 ## :spiral_calendar: Entidades ou tabelas do sistema
 
 Liste as principais entidades do sistema.
 
-
-----
+> Produto
+> Loja
+> Usuário
+> Cupom
+> Venda
+> Avaliação
 
 :warning::warning::warning: As informações a seguir devem ser enviadas juntamente com a versão final do projeto. :warning::warning::warning:
 
@@ -41,15 +56,15 @@ Liste as principais entidades do sistema.
 
 **Frontend:**
 
-Lista as tecnologias, frameworks e bibliotecas utilizados.
+HTML, CSS e TypeScript
 
 **Backend:**
 
-Lista as tecnologias, frameworks e bibliotecas utilizados.
-
+Strapi
 
 ## :shipit: Operações implementadas para cada entidade da aplicação
 
+(não planejado)
 
 | Entidade| Criação | Leitura | Atualização | Remoção |
 | --- | --- | --- | --- | --- |
@@ -60,6 +75,8 @@ Lista as tecnologias, frameworks e bibliotecas utilizados.
 > Lembre-se que é necessário implementar o CRUD de pelo menos duas entidades.
 
 ## :neckbeard: Rotas da API REST utilizadas
+
+(não planejado)
 
 | Método HTTP | URL |
 | --- | --- |
