@@ -4,9 +4,8 @@ Uma loja virtual para vendedores de brechó
 
 ## :technologist: Membros da equipe
 
-Marcus Vinicius Alves Nogueira, Engenharia de Computação, 540230
-Francisco Leudes Bezerra Neto, Ciência da Computação, 552478
-Maurício Miranda Carneiro, Ciência da Computação, 548318
+Marcus Vinicius Alves Nogueira, Engenharia de Computação, 540230 </br>
+Maurício Miranda Carneiro, Ciência da Computação, 548318 </br>
 
 ## :bulb: Objetivo Geral
 Desenvolver uma plataforma digital que funcione como um e-commerce colaborativo, conectando vendedores de brechós a consumidores interessados em produtos de segunda mão. O objetivo é fomentar a economia circular, apoiar pequenos empreendedores e promover o consumo consciente, oferecendo um espaço acessível, seguro e intuitivo para compra e venda de itens sustentáveis e exclusivos.
@@ -19,35 +18,35 @@ O objetivo é a ampliação do alcance de vendas, fortalecimento financeiro e a 
 
 ## :people_holding_hands: Papéis ou tipos de usuário da aplicação
 
-> Usuário não autenticado
-> Cliente
-> Vendedor
+> Usuário não autenticado </br>
+> Cliente </br>
+> Vendedor </br>
 
 ## :triangular_flag_on_post:	 Principais funcionalidades da aplicação
 
-> Visualizar e buscar produtos (todos)
-> Visualizar lojas (todos)
-> Adcionar ao carrinho (cliente e vendedor)
-> Realizar compra (cliente e vendedor)
-> Cadastrar produto (vendedor)
-> Gerenciar lojas (vendedor)
-> Gerenciar produtos (vendedor)
-> Visualizar estoque (vendedor)
-> Visualizar histórico de vendas (vendedor)
-> Avaliar produto (cliente)
-> Visualizar avaliações (todos)
-> Gerenciar cupoms (vendedor)
+> Visualizar e buscar produtos (todos) </br>
+> Visualizar lojas (todos) </br>
+> Adcionar ao carrinho (cliente e vendedor) </br>
+> Realizar compra (cliente e vendedor) </br>
+> Cadastrar produto (vendedor) </br>
+> Gerenciar lojas (vendedor) </br>
+> Gerenciar produtos (vendedor) </br>
+> Visualizar estoque (vendedor) </br>
+> Visualizar histórico de vendas (vendedor) </br>
+> Avaliar produto (cliente) </br>
+> Visualizar avaliações (todos) </br>
+> Gerenciar cupoms (vendedor) </br>
 
 ## :spiral_calendar: Entidades ou tabelas do sistema
 
 Liste as principais entidades do sistema.
 
-> Produto
-> Loja
-> Usuário
-> Cupom
-> Venda
-> Avaliação
+> Produto </br>
+> Loja </br>
+> Usuário </br>
+> Cupom </br>
+> Venda </br>
+> Avaliação </br>
 
 :warning::warning::warning: As informações a seguir devem ser enviadas juntamente com a versão final do projeto. :warning::warning::warning:
 
