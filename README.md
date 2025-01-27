@@ -5,6 +5,8 @@ Uma loja virtual para vendedores de brechó
 ## :technologist: Membros da equipe
 
 Marcus Vinicius Alves Nogueira, Engenharia de Computação, 540230
+Francisco Leudes Bezerra Neto, Ciência da Computação, 552478
+Maurício Miranda Carneiro, Ciência da Computação, 548318
 
 ## :bulb: Objetivo Geral
 Desenvolver uma plataforma digital que funcione como um e-commerce colaborativo, conectando vendedores de brechós a consumidores interessados em produtos de segunda mão. O objetivo é fomentar a economia circular, apoiar pequenos empreendedores e promover o consumo consciente, oferecendo um espaço acessível, seguro e intuitivo para compra e venda de itens sustentáveis e exclusivos.
