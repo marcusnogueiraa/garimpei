@@ -57,7 +57,7 @@ Liste as principais entidades do sistema.
 
 **Frontend:**
 
-HTML, CSS e TypeScript
+VueJs, Bootstap e TypeScript
 
 **Backend:**
 
