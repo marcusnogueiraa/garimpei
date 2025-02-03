@@ -1,6 +1,6 @@
 <template>
-  <div class="mb-3">
-    <label :for="id" class="form-label">{{ label }}</label>
+  <div>
+    <label :for="id" class="form-label d-block">{{ label }}</label>
     <div class="input-group">
       <input
         :id="id"
@@ -16,11 +16,19 @@
         class="btn btn-outline-secondary"
         @click="togglePassword"
       >
-        👁️
+        <i :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
       </button>
     </div>
   </div>
 </template>
+
+<style scoped>
+.form-label {
+  text-align: left;
+  font-weight: 500;
+  display: block;
+}
+</style>
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, computed } from 'vue';
@@ -34,7 +42,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
+
 const showPassword = ref(false);
+
 const inputType = computed(() => (showPassword.value && props.type === 'password' ? 'text' : props.type));
 
 const togglePassword = () => {
