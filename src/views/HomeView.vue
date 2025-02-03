@@ -19,12 +19,13 @@
       <h4 class="fw-bold">Produtos</h4>
       <div class="row mt-4">
         <ProductCard 
-        v-for="(produto, index) in produtos" 
-        :key="index" 
-        :nome="produto.nome" 
-        :categoria="produto.categoria" 
-        :preco="produto.preco" 
-      />
+            v-for="(item, index) in produtos" 
+            :key="index" 
+            :nome="item.nome" 
+            :categoria="item.categoria" 
+            :preco="item.preco" 
+            :imagem="item.imagem"
+          />
       </div>
     </section>
     <FooterComponent />
@@ -41,10 +42,30 @@ export default defineComponent({
   name: 'HeaderContent',
   setup() {
     const produtos = ref([
-      { nome: 'Vestido Vintage Floral', categoria: 'Brechó', preco: 'R$ 55,00' },
-      { nome: 'Vestido Vintage Floral', categoria: 'Brechó', preco: 'R$ 55,00' },
-      { nome: 'Vestido Vintage Floral', categoria: 'Brechó', preco: 'R$ 55,00' },
-      { nome: 'Vestido Vintage Floral', categoria: 'Brechó', preco: 'R$ 55,00' },
+      { 
+            nome: 'Vestido Vintage Floral', 
+            categoria: 'Brechó', 
+            preco: 'R$ 55,00',
+            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+        },
+        { 
+            nome: 'Vestido Vintage Floral', 
+            categoria: 'Brechó', 
+            preco: 'R$ 55,00',
+            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+        },
+        { 
+            nome: 'Vestido Vintage Floral', 
+            categoria: 'Brechó', 
+            preco: 'R$ 55,00',
+            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+        },
+        { 
+            nome: 'Vestido Vintage Floral', 
+            categoria: 'Brechó', 
+            preco: 'R$ 55,00',
+            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+        },
     ]);
     return { produtos };
   },
