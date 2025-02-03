@@ -12,7 +12,7 @@
       </form>
 
       <p class="text-center mt-3">
-        Não tem uma conta? <a href="#" class="text-decoration-none">Cadastre-se</a>
+        Não tem uma conta? <a href="\register" class="text-decoration-none">Cadastre-se</a>
       </p>
     </div>
   </div>
