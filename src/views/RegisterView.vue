@@ -1,4 +1,3 @@
-<!-- src/components/RegisterForm.vue -->
 <template>
   <div class="register-page d-flex justify-content-center align-items-center vh-100">
     <div class="register-card card shadow-sm p-4">
