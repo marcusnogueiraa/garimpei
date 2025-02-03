@@ -18,11 +18,11 @@
   
         <p class="mb-1">
           <i class="fas fa-envelope"></i> 
-          <a href="mailto:contato@modasustentavel.com" class="text-light">contato@modasustentavel.com</a>
+          <a href="mailto:contato@modasustentavel.com" class="text-light">contato@garimpei.com</a>
         </p>
         
 
-        <p class="m-0">&copy; 2024 Moda Sustentável. Todos os direitos reservados.</p>
+        <p class="m-0">&copy; Garimpei. Todos os direitos reservados.</p>
       </div>
     </footer>
   </template>
