@@ -2,7 +2,7 @@
   <div class="container-fluid bg-light min-vh-100 m-0 p-0">
     <HeaderComponent/>
 
-    <main class="text-center py-5 bg-light vh-100 d-grid align-items-center justify-content-center">
+    <main class="text-center py-5 bg-light vh-90 d-grid align-items-center justify-content-center">
       <div>
         <h1 class="fw-bold">Moda Sustentável ao seu Alcance</h1>
         <p class="text-muted">
