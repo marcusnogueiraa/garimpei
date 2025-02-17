@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "minLength": 5
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 150,
+      "required": false
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "quantity": {
+      "type": "integer",
+      "min": 0,
+      "required": true,
+      "default": 1
+    }
+  }
+}
