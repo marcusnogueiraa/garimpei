@@ -1,6 +1,7 @@
 <template>
     <div class="product-page">
       <HeaderComponent />
+      
   
       <section class="container my-5">
         <div class=" p-4">

@@ -1,16 +1,20 @@
 <template>
   <div class="container-fluid bg-light min-vh-100 m-0 p-0">
-    <HeaderComponent/>
+    <HeaderComponent />
 
-    <main class="text-center py-5 bg-light vh-100 d-grid align-items-center justify-content-center">
-      <div>
-        <h1 class="fw-bold">Moda Sustentável ao seu Alcance</h1>
-        <p class="text-muted">
-          Descubra peças únicas em brechós selecionados. Compre e venda moda de segunda mão de forma fácil e sustentável.
-        </p>
-        <div class="d-flex justify-content-center gap-3 mt-3">
-          <button class="btn btn-success">Explorar Produtos</button>
-          <button class="btn btn-outline-secondary">Abrir sua Loja</button>
+    <main class="bg-light">
+      <div class="mural">
+        <div class="bg-black-50 d-flex justify-content-center align-items-center ">
+          <div class="mural-content">
+            <h1 class="fw-bold text-light">Moda Sustentável ao seu Alcance</h1>
+            <p class="text-light">
+              Descubra peças únicas em brechós selecionados. Compre e venda moda de segunda mão de forma fácil e sustentável.
+            </p>
+            <div class="d-flex gap-3 mt-3 justify-content-center align-items-center">
+              <button class="btn btn-success">Explorar Produtos</button>
+              <button class="btn btn-outline-light">Abrir sua Loja</button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -19,13 +23,14 @@
       <h4 class="fw-bold">Produtos</h4>
       <div class="row mt-4">
         <ProductCard 
-            v-for="(item, index) in produtos" 
-            :key="index" 
-            :nome="item.nome" 
-            :categoria="item.categoria" 
-            :preco="item.preco" 
-            :imagem="item.imagem"
-          />
+          v-for="(item, index) in produtos" 
+          :key="index" 
+          :nome="item.nome" 
+          :categoria="item.categoria" 
+          :preco="item.preco" 
+          :imagem="item.imagem"
+          class="mt-2"
+        />
       </div>
     </section>
     <FooterComponent />
@@ -43,45 +48,76 @@ export default defineComponent({
   setup() {
     const produtos = ref([
       { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
+        nome: 'Vestido Vintage Floral', 
+        categoria: 'Brechó', 
+        preco: 'R$ 55,00',
+        imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+      },
+      { 
+        nome: 'Vestido Vintage Floral', 
+        categoria: 'Brechó', 
+        preco: 'R$ 55,00',
+        imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+      },
+      { 
+        nome: 'Vestido Vintage Floral', 
+        categoria: 'Brechó', 
+        preco: 'R$ 55,00',
+        imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+      },
+      { 
+        nome: 'Vestido Vintage Floral', 
+        categoria: 'Brechó', 
+        preco: 'R$ 55,00',
+        imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
+      },
     ]);
     return { produtos };
   },
   components: {
-      HeaderComponent,
-      ProductCard,
-      FooterComponent,
-    },
+    HeaderComponent,
+    ProductCard,
+    FooterComponent,
+  },
 });
 </script>
 
 <style scoped>
-.placeholder-image {
+.mural {
+  background: url(../assets/mural.avif) no-repeat center center;
+  
+  background-size: cover;
+  height: 500px;  
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center; 
+  text-align: center;
+  position: relative;
+}
+
+.bg-black-50{
+  height: 100%;
   width: 100%;
-  height: 150px;
-  background: #e9ecef;
-  border-radius: 5px;
+
+  background-color: rgba(0, 0, 0, 0.589);
+}
+
+.mural-content {
+  max-width: 600px; 
+}
+
+.mural h1 {
+  font-size: 2.5rem; 
+  margin-bottom: 1rem; 
+}
+
+.mural p {
+  font-size: 1.2rem; 
+  margin-bottom: 1.5rem;  
+}
+
+.mural .btn {
+  font-size: 1rem; 
+  padding: 10px 20px; 
 }
 </style>
