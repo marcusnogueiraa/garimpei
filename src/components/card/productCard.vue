@@ -1,6 +1,9 @@
 <template>
   <div class="col-md-3">
-    <div class="card product-card shadow-sm border-1" @mouseover="hover = true" @mouseleave="hover = false">
+    <div class="card product-card shadow-sm border-1 position-relative" @mouseover="hover = true" @mouseleave="hover = false">
+      <div class="star position-absolute">
+        <div class="favorite">&star;</div>
+      </div>
       <div class="card-body text-center">
         <img :src="imagem" :alt="nome" class="product-image object-fit-cover" />
         <h5 class="card-title mt-3">{{ nome }}</h5>
@@ -45,9 +48,19 @@ export default defineComponent({
 .product-card {
   transition: all 0.3s ease-in-out;
 }
+.star{
+  display: none;
+  top: 6px;
+  right: 6px;
+
+  cursor: pointer;
+}
 .product-card:hover {
   box-shadow: 0px 0x 16px rgba(0, 0, 0, 0.6);
   transform: scale(1.05);
+}
+.product-card:hover .star{
+  display: block;
 }
 .product-image {
   width: 100%;
