@@ -15,19 +15,20 @@ const router = useRouter()
 
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
-    errorMessage.value = 'As senhas não coincidem!'
-    return
+    errorMessage.value = 'As senhas não coincidem!';
+    return;
   }
 
-  const response = await authStore.register(name.value, email.value, password.value)
+  const response = await authStore.register(name.value, email.value, password.value);
 
   if (response.success) {
-    router.push('/dashboard')
+    router.push('/dashboard');
   } else {
-    console.log("Erro recebido no componente:", response.message)
-    errorMessage.value = response.message.error.message
+    console.log("Erro recebido no componente:", response.message);
+    errorMessage.value = response.message;
   }
-}
+};
+
 </script>
 
 <template>

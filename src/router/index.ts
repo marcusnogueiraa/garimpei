@@ -42,10 +42,15 @@ const routes: Array<RouteRecordRaw> = [
     component: CartView
   },
     {
-      path: '/favorites',
-      name: 'favorites',
-      component: FavoritesView
-    },
+    path: '/favorites',
+    name: 'favorites',
+    component: FavoritesView
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: StoreDashboardView
+  }
 ]
 
 const router = createRouter({

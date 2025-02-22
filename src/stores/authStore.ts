@@ -4,30 +4,34 @@ import api from '@/api/axios'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<any>(null);
-  const token = ref<string>(localStorage.getItem('token') ?? ''); // Evita erro de tipo
+  const token = ref<string>(localStorage.getItem('token') ?? ''); 
 
   async function register(name: string, email: string, password: string) {
-    try {
-      const response = await api.post('/auth/local/register', { 
-        username: name,
-        email,
-        password
-      });
-
-      token.value = response.data.jwt;
-      user.value = response.data.user;
-      localStorage.setItem('token', token.value);
-
-      return { success: true }
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.error?.message || "Erro ao registrar";
-      return { success: false, message: errorMessage }
+    const response = await api.post('/auth/local/register', { 
+      username: name,
+      email,
+      password
+    }).catch(error => error.response);
+  
+    if (!response || response.status !== 200) {  
+      return {
+        success: false,
+        message: response?.data?.error?.message || "Ocorreu um erro no Cadastro"
+      };
     }
+  
+    token.value = response.data.jwt;
+    user.value = response.data.user;
+    localStorage.setItem('token', token.value);
+  
+    return { success: true };
   }
+  
+  
   
   async function login(email: string, password: string) {
     const response = await api.post('/auth/local', {
-      identifier: email, // O Strapi usa 'identifier' ao invés de 'email'
+      identifier: email,
       password
     }).catch(error => error.response);
 
@@ -38,7 +42,6 @@ export const useAuthStore = defineStore('auth', () => {
       };
     }
 
-    // Salva o token e os dados do usuário na store
     token.value = response.data.jwt;
     user.value = response.data.user;
     localStorage.setItem('token', token.value);
@@ -49,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
-    token.value = ''; // Define como string vazia em vez de null
+    token.value = '';
     user.value = null;
     localStorage.removeItem('token');
   }

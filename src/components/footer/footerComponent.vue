@@ -18,7 +18,7 @@
   
         <p class="mb-1">
           <i class="fas fa-envelope"></i> 
-          <a href="mailto:contato@modasustentavel.com" class="text-light">contato@garimpei.com</a>
+          <a href="mailto:contato@modasustentavel.com" class="text-light"> contato@garimpei.com</a>
         </p>
         
 
