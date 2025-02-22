@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import ProductView from '../views/ProductView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import StoreDashboardView from '@/views/StoreDashboardView.vue'
 import SearchView from '@/views/SearchView.vue'
 import CartView from '@/views/CartView.vue'
 import FavoritesView from '@/views/favoritesView.vue'
@@ -27,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: HomeView
   },
   {

@@ -1,3 +1,34 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { useAuthStore } from '../stores/authStore'
+
+import { useRouter } from 'vue-router'
+import InputLoginField from '@/components/InputLoginField.vue'
+
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const errorMessage = ref('')
+const authStore = useAuthStore()
+const router = useRouter()
+
+const handleRegister = async () => {
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = 'As senhas não coincidem!'
+    return
+  }
+
+  const response = await authStore.register(name.value, email.value, password.value)
+
+  if (response.success) {
+    router.push('/dashboard') // Redireciona após cadastro
+  } else {
+    errorMessage.value = response.message // Exibe erro
+  }
+}
+</script>
+
 <template>
   <div class="register-page d-flex justify-content-center align-items-center vh-100">
     <div class="register-card card shadow-sm p-4">
@@ -9,7 +40,9 @@
         <InputLoginField label="Email" id="email" type="email" placeholder="seu@email.com" v-model="email" />
         <InputLoginField label="Senha" id="password" type="password" placeholder="********" v-model="password" />
         <InputLoginField label="Confirme sua senha" id="confirm-password" type="password" placeholder="********" v-model="confirmPassword" />
-        
+
+        <p v-if="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
+
         <button type="submit" class="register-button btn btn-success w-100">Cadastrar</button>
       </form>
 
@@ -41,21 +74,3 @@
   border-color: #7C9082;
 }
 </style>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-import InputLoginField from '@/components/InputLoginField.vue';
-
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-
-const handleRegister = () => {
-  if (password.value !== confirmPassword.value) {
-    alert('As senhas não coincidem!');
-    return;
-  }
-  console.log('Nome:', name.value, 'Email:', email.value, 'Senha:', password.value);
-};
-</script>
