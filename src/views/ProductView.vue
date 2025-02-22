@@ -1,103 +1,86 @@
 <template>
-    <div class="product-page">
-      <HeaderComponent />
-      
-  
-      <section class="container my-5">
-        <div class=" p-4">
-          <div class="row">
-            <div class="col-md-4 d-flex justify-content-center">
-              <img :src="produto.imagem" :alt="produto.nome" class="img-fluid product-image" />
-            </div>
-            <div class="col-md-8">
-              <h2 class="fw-bold">{{ produto.nome }}</h2>
-              <h4 class="text-success">R$ {{ produto.preco }}</h4>
-              <p>{{ produto.descricao }}</p>
-              <button class="btn btn-success">Adicionar ao carrinho</button>
-            </div>
+  <div class="product-page">
+    <HeaderComponent />
+
+    <section class="container my-5">
+      <div class="p-4">
+        <div class="row">
+          <div class="col-md-4 d-flex justify-content-center">
+            <img :src="produto?.imagem1" :alt="produto?.nome" class="img-fluid product-image" />
+          </div>
+          <div class="col-md-8">  
+            <h2 class="fw-bold">{{ produto?.nome }}</h2>
+            <h4 class="text-success">{{ produto?.preco }}</h4>
+            <p>{{ produto?.descricao }}</p>
+            <button class="btn btn-success" @click="adicionarAoCarrinho(produto)">Adicionar ao carrinho</button>
           </div>
         </div>
-      </section>
-  
-      <section class="container my-5">
-        <h4 class="fw-bold">Produtos Recomendados</h4>
-        <div class="row mt-4">
-          <ProductCard 
-            v-for="(item, index) in produtosRecomendados" 
-            :key="index" 
-            :nome="item.nome" 
-            :categoria="item.categoria" 
-            :preco="item.preco" 
-            :imagem="item.imagem"
-          />
+        <div class="mt-5">
+          <h4>Avaliações</h4>
+          <div v-if="produto?.avaliacoes && produto.avaliacoes.length">
+            <div v-for="avaliacao in produto.avaliacoes" :key="avaliacao.buyer" class="mb-3">
+              <p><strong>{{ avaliacao.buyer }}</strong> - Nota: {{ avaliacao.nota }}</p>
+              <p>{{ avaliacao.comentario }}</p>
+            </div>
+          </div>
+          <div v-else>
+            <p>Este produto ainda não possui avaliações.</p>
+          </div>
         </div>
-      </section>
-  
-      <FooterComponent />
-    </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import HeaderComponent from '@/components/header/headerComponent.vue';
+      </div>
+    </section>
+
+    <FooterComponent />
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
-import ProductCard from '@/components/card/productCard.vue';
-  export default defineComponent({
-    components: {
-      HeaderComponent,
-      FooterComponent,
-      ProductCard
-    },
-    setup() {
-    
-      const produto = ref({
-        nome: 'Camiseta Tradicional Preta',
-        preco: '23,00',
-        descricao: 'Uma descrição detalhada do produto iria aqui.',
-        imagem: 'https://m.media-amazon.com/images/I/41NXWPtQkcL._AC_SX679_.jpg' 
-      });
-  
-      const produtosRecomendados = ref([
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-        { 
-            nome: 'Vestido Vintage Floral', 
-            categoria: 'Brechó', 
-            preco: 'R$ 55,00',
-            imagem: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg' 
-        },
-      ]);
-  
-      return { produto, produtosRecomendados };
-    }
-  });
-  </script>
-  
-  <style scoped>
-  .product-card {
-    background-color: #f8f9fa;
-    border: none;
+import { Produto } from '../types/interfaces';
+import { useCartStore } from '@/store/cart';
+
+export default defineComponent({
+  components: {
+    HeaderComponent,
+    FooterComponent
+  },
+  setup() {
+    const route = useRoute();
+    const produto = ref<Produto | null>(null);
+    const cartStore = useCartStore();
+
+    const fetchProduto = async (id: number) => {
+      // Substitua pelo seu método de busca, por exemplo, uma chamada HTTP para sua API
+      const response = await fetch(`/api/produtos/${id}`);
+      if (response.ok) {
+        produto.value = await response.json();
+      }
+    };
+
+    onMounted(() => {
+      const produtoId = Number(route.params.id);
+      if (!isNaN(produtoId)) {
+        fetchProduto(produtoId);
+      }
+    });
+
+    const adicionarAoCarrinho = (produto: Produto | null) => {
+      if (produto) {
+        cartStore.addCartItem(produto);
+      }
+    };
+
+    return { produto, adicionarAoCarrinho };
   }
-  
-  .product-image {
-    max-width: 100%;
-    border-radius: 5px;
-  }
-  </style>
-  
+});
+</script>
+
+<style scoped>
+.product-image {
+  max-width: 100%;
+  height: auto;
+}
+</style>

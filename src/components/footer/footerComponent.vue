@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer text-light text-center py-4">
+    <footer class="footer  text-light text-center py-4">
       <div class="container">
         <div class="social-icons mb-3">
           <a href="https://facebook.com" target="_blank" class="icon-link">
