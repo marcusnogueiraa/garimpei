@@ -3,10 +3,10 @@ export interface Produto {
   nome: string;
   preco: number;
   imagem1: string;
-  imagem2?: string; // Tornado opcional
+  imagem2?: string;
   categoria: string[];
   seller: string;
-  avaliacoes?: Avaliacao[]; // Tornado opcional
+  avaliacoes?: Avaliacao[]; 
   descricao: string
 }
 

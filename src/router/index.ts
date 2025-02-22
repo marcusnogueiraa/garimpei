@@ -7,6 +7,7 @@ import RegisterView from '@/views/RegisterView.vue'
 import SearchView from '@/views/SearchView.vue'
 import CartView from '@/views/CartView.vue'
 import FavoritesView from '@/views/favoritesView.vue'
+import SellView from '@/views/SellView.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -40,11 +41,16 @@ const routes: Array<RouteRecordRaw> = [
     name: 'cart',
     component: CartView
   },
-    {
-      path: '/favorites',
-      name: 'favorites',
-      component: FavoritesView
-    },
+  {
+    path: '/favorites',
+    name: 'favorites',
+    component: FavoritesView
+  },
+  {
+    path: '/sell-product',
+    name: 'sell-product',
+    component: SellView
+  },
 ]
 
 const router = createRouter({

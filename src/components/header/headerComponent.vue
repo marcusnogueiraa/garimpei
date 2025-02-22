@@ -63,9 +63,9 @@
     <div class="side-menu">
       <button class="close-btn" @click="toggleSideMenu">&times;</button>
       <ul>
-        <li @click="logout">Logout</li>
-        <li @click="$router.push('/sell')">Vender Produto</li>
+        <li @click="$router.push('/sell-product')">Vender Produto</li>
         <li @click="$router.push('/favorites')">Ver Favoritos</li>
+        <li @click="logout">Logout</li>
       </ul>
     </div>
   </aside>

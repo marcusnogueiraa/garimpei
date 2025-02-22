@@ -12,7 +12,7 @@
             </p>
             <div class="d-flex gap-3 mt-3 justify-content-center align-items-center">
               <a href="#produtos" class="btn btn-success">Explorar Produtos</a>
-              <button class="btn btn-outline-light">Comece a Vender</button>
+              <button class="btn btn-outline-light" @click="$router.push('/sell-product')">Comece a Vender</button>
             </div>
           </div>
         </div>
