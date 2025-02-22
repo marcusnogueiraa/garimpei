@@ -22,9 +22,10 @@ const handleRegister = async () => {
   const response = await authStore.register(name.value, email.value, password.value)
 
   if (response.success) {
-    router.push('/dashboard') // Redireciona após cadastro
+    router.push('/dashboard')
   } else {
-    errorMessage.value = response.message // Exibe erro
+    console.log("Erro recebido no componente:", response.message)
+    errorMessage.value = response.message.error.message
   }
 }
 </script>
