@@ -1,128 +1,266 @@
 <template>
   <header class="header">
-    <div class="container d-flex justify-content-between align-items-center py-3">
-      <div>
-        <h1 class="text-light fw-bold">Garimpei</h1>
+    <div class="d-flex justify-content-between align-items-center px-5 py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <router-link to="/" class="text-light fw-bold">Garimpei</router-link>
       </div>
-      <div>
+      <div v-if="user.name" class="d-flex align-items-center">
+        <span class="text-light fw-bold me-3">Olá, {{ user.name }}!</span>
+        <div class="menu-icon" @click="toggleSideMenu">
+          <i class="fas fa-bars text-light"></i>
+        </div>
+      </div>
+      <div v-else>
         <router-link to="/login" class="btn btn-outline-light me-2">Login</router-link>
         <router-link to="/register" class="btn btn-success">Cadastro</router-link>
       </div>
     </div>
   </header>
+  
   <nav class="sticky-nav shadow">
     <div class="d-flex justify-content-between align-items-center px-4">
       <div class="d-flex gap-4 category-menu">
         <div
           v-for="(categoria, index) in categorias"
           :key="index"
-          class="nav-item  only-desktop"
+          class="nav-item only-desktop"
           @mouseover="toggleDropdown(index, true)"
           @mouseleave="toggleDropdown(index, false)"
         >
           <a href="#" class="nav-link text-light">{{ categoria.nome }}</a>
-
           <transition name="fade">
             <ul v-if="categoria.ativo" class="dropdown">
               <li v-for="(item, i) in categoria.tipos" :key="i">
-                <a href="#" class="dropdown-item">{{ item }}</a>
+                <a href="#" class="dropdown-item" @click="buscarPorItem(item)">{{ item }}</a>
               </li>
             </ul>
           </transition>
         </div>
       </div>
-      <div class="search-box">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Buscar produtos..."
-          class="form-control"
-        />
-        <button class="btn btn-outline-light" @click="buscarProduto">
-          <i class="fas fa-search"></i>
-        </button>
+      
+      <div class="d-flex gap-4">
+         <form @submit.prevent="buscarProduto" class="search-box">
+            <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Buscar produtos..."
+            class="form-control w-100"
+          />
+          <button class="btn btn-outline-light">
+            <i class="fas fa-search"></i>
+          </button>
+         </form>
+          <div @click="openCart" class="d-flex align-items-center">
+            <img src="../../assets/bag.svg" alt="Loja" class="cart-icon" />
+          </div>
       </div>
     </div>
   </nav>
+  
+  <aside v-if="sideMenuOpen">
+    <div class="side-menu-overlay" @click="toggleSideMenu"></div>
+    <div class="side-menu">
+      <button class="close-btn" @click="toggleSideMenu">&times;</button>
+      <ul>
+        <li @click="logout">Logout</li>
+        <li @click="$router.push('/sell')">Vender Produto</li>
+        <li @click="$router.push('/favorites')">Ver Favoritos</li>
+      </ul>
+    </div>
+  </aside>
+  
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted, onUnmounted } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
+import { useSearchStore } from '@/store/search';  
+
 export default defineComponent({
   name: 'NavBar',
   setup() {
+    const user = useUserStore();
+    const searchStore = useSearchStore();
+    const router = useRouter();
+    const sideMenuOpen = ref(false);
+    
     const categorias = reactive([
       { nome: 'Roupas', ativo: false, tipos: ['Vestidos', 'Camisetas', 'Calças', 'Jaquetas'] },
       { nome: 'Acessórios', ativo: false, tipos: ['Bolsas', 'Óculos', 'Bijuterias', 'Relógios'] },
       { nome: 'Calçados', ativo: false, tipos: ['Tênis', 'Sandálias', 'Botas', 'Sapatos'] }
     ]);
-    const searchQuery = ref('');
-    const isMobile = ref(window.innerWidth < 768);
+
+    const searchQuery = ref(searchStore.query); 
+
     const toggleDropdown = (index: number, state: boolean) => {
       categorias[index].ativo = state;
     };
+
+    const toggleSideMenu = () => {
+      sideMenuOpen.value = !sideMenuOpen.value;
+    };
+
     const buscarProduto = () => {
       if (searchQuery.value.trim() !== '') {
-        alert(`Buscando por: ${searchQuery.value}`);
+        searchStore.setSearchQuery(searchQuery.value);
+        router.push({ name: 'Search', query: { q: searchQuery.value } });
       }
     };
-    const updateMobileView = () => {
-      isMobile.value = window.innerWidth < 768;
+
+    const buscarPorItem = (item: string) => {
+      searchStore.setSearchQuery(item);
+      searchQuery.value = item; 
+      router.push('/search');
     };
-    onMounted(() => {
-      window.addEventListener('resize', updateMobileView);
-    });
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateMobileView);
-    });
-    return { categorias, searchQuery, buscarProduto, toggleDropdown, isMobile };
+
+    const openCart = () => {
+      router.push('/cart');
+    };
+
+    const logout = () => {
+      user.name = ''; 
+      router.push('/');
+    };
+
+    return { 
+      user, 
+      categorias, 
+      searchQuery, 
+      buscarProduto, 
+      buscarPorItem, 
+      toggleDropdown, 
+      openCart, 
+      logout, 
+      toggleSideMenu, 
+      sideMenuOpen
+    };
   }
 });
 </script>
 
 <style scoped>
 .header {
-  background-color: #4A4238;
+  background-color: #4a4238;
 }
+
 .btn {
   font-weight: bold;
   padding: 6px 14px;
 }
+
 .btn-success {
-  background-color: #6C9A8B;
-  border-color: #6C9A8B;
+  background-color: #6c9a8b;
+  border-color: #6c9a8b;
 }
+
 .btn-success:hover {
   background-color: #5b887a;
   border-color: #5b887a;
 }
+
+.cart-icon {
+  cursor: pointer;
+}
+
+.menu-icon{
+  cursor: pointer;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100vh;
+  background: #4a4238;
+  color: #fff;
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1050;
+}
+
+.side-menu-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu ul li {
+  padding: 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.side-menu ul li:hover {
+  background: #2c2721;
+}
+
+.close-btn {
+  align-self: flex-end;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.side-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1049;
+}
+
 .search-box {
   display: flex;
   align-items: center;
   gap: 5px;
+
+  outline: none;
 }
+
 .form-control {
   padding: 8px;
   width: 250px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+
 .sticky-nav {
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1020;
-  background-color: #4A4238;
+  background-color: #4a4238;
   padding: 10px 0;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 .category-menu {
   display: flex;
 }
+
 .nav-item {
   position: relative;
 }
+
 .nav-link {
   font-weight: bold;
   padding: 8px 16px;
@@ -130,36 +268,76 @@ export default defineComponent({
   color: white;
   text-decoration: none;
 }
+
 .nav-link:hover {
   text-decoration: underline;
 }
+
 .dropdown {
-position: absolute;
-  background: white;
-  list-style: none;
-  padding: 10px;
-  margin: 0;
+  position: absolute;
   top: 100%;
-  left: 0;
-  border-radius: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  list-style: none;
+  border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 150px;
+  padding: 10px 0;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-item:hover .dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 5px);
+}
+
+.dropdown li {
+  padding: 10px 20px;
+  transition: background 0.3s ease-in-out;
+}
+
+.dropdown-item {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  display: block;
+  transition: color 0.3s ease-in-out;
+}
+
+.dropdown-item:hover {
+  color: white;
+  border-radius: 5px;
+}
+
+.dropdown li {
+  transition: all 0.1s ease-in;
+}
+
+.dropdown li:hover {
+  background-color: #c2c2c2;
 }
 
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
+
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
   transform: translateY(0);
 }
+
 @media (max-width: 768px) {
   .only-desktop {
     display: none;
