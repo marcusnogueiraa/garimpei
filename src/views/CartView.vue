@@ -5,7 +5,7 @@
         <h2 class="fw-bold">Meu Carrinho</h2>
         <div v-if="cartStore.cart.length === 0" class="h-100 d-flex justify-content-center align-items-center">
           <div>
-            <img src="../assets/empty_cart.svg" class="empty-cart-icon" alt="">
+            <img src="../assets/empty_cart.svg" class="empty-cart-icon" alt="Carrinho Vazio">
             <h6 class="mt-4">Carrinho vazio</h6>
           </div>
         </div>
@@ -25,7 +25,7 @@
             />
           </div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary">Comprar</button>
+            <button type="button" class="btn btn-primary" @click="$router.push('/payment')">Comprar</button>
           </div>
         </div>
       </main>
@@ -39,6 +39,7 @@
   import ProductCard from '@/components/card/productCard.vue';
   import { useCartStore } from '@/store/cart';
   import { defineComponent } from 'vue';
+
   
   export default defineComponent({
     setup() {

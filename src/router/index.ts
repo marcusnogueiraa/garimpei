@@ -1,4 +1,3 @@
-
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ProductView from '../views/ProductView.vue'
@@ -11,6 +10,7 @@ import SellView from '@/views/SellView.vue'
 import MyProductsView from '@/views/MyProductsView.vue'
 import EditProductView from '@/views/EditProductView.vue'
 import StoreDashboardView from '@/views/StoreDashboardView.vue'
+import PaymentView from '@/views/PaymentView.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -68,6 +68,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dashboard',
     name: 'dashboard',
     component: StoreDashboardView
+  },
+  {
+    path: '/payment',
+    name: 'payment',
+    component: PaymentView
   },
 ]
 

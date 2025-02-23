@@ -139,7 +139,9 @@ export default defineComponent({
 
     const logout = () => {
       authStore.logout();
-      router.push('/');
+      router.push('/').then(() => {
+        window.location.reload();
+      });
     };
 
     return { 
