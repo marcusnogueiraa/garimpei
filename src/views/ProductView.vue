@@ -1,36 +1,47 @@
 <template>
   <div class="product-page">
-    <HeaderComponent />
+    <div>
+      <HeaderComponent />
+    </div>
 
-    <section class="container my-5 animate-spawn">
+    <section class="container my-5 h-100 animate-spawn">
       <div class="p-4">
-        <div class="row">
+        <div v-if="loading" class="text-center">
+          <span class="spinner-border text-success"></span>
+          <p>Carregando produto...</p>
+        </div>
+
+
+        <div v-else-if="!produto" class="text-center">
+          <p class="text-muted">Produto não encontrado.</p>
+        </div>
+
+        <div v-else class="row">
           <div class="col-md-4 d-flex justify-content-center">
             <img 
-              :src="hover && produto?.imagem2 ? produto?.imagem2 : produto?.imagem1" 
-              :alt="produto?.nome" 
+              :src="hover && produto?.image2 ? produto?.image2 : produto?.image1" 
+              :alt="produto?.name" 
               class="img-fluid product-image"
               @mouseover="hover = true" 
               @mouseleave="hover = false"
             />
           </div>
           <div class="col-md-8">  
-            <h2 class="fw-bold">{{ produto?.nome }}</h2>
+            <h2 class="fw-bold">{{ produto?.name }}</h2>
             <h4 class="text-success">Preço: {{ formatPrice(precoComDesconto) }}</h4>
             <p v-if="desconto > 0" class="text-muted">
-              <s>Original: {{ formatPrice(produto?.preco ?? 0) }}</s> ({{ desconto }}% OFF)
+              <s>Original: {{ formatPrice(produto?.price ?? 0) }}</s> ({{ desconto }}% OFF)
             </p>
+            <p>{{ produto?.description }}</p>
 
-            <p>{{ produto?.descricao }}</p>
 
-            <div>
-              <div class="cupom-container">
-                <input v-model="cupomDigitado" type="text" class="form-control" placeholder="Digite o cupom" />
-                <button class="btn btn-primary" @click="aplicarCupom">Aplicar</button>
-              </div>
+            <div class="cupom-container">
+              <input v-model="cupomDigitado" type="text" class="form-control" placeholder="Digite o cupom" />
+              <button class="btn btn-primary" @click="aplicarCupom">Aplicar</button>
             </div>
             <p v-if="mensagemCupom" class="text">{{ mensagemCupom }}</p>
 
+            <!-- Adicionar ao carrinho -->
             <button class="btn btn-success mt-3" @click="adicionarAoCarrinho(produto)">Adicionar ao carrinho</button>
           </div>
         </div>
@@ -42,44 +53,61 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import HeaderComponent from "@/components/header/headerComponent.vue";
 import FooterComponent from "@/components/footer/footerComponent.vue";
-import { Produto } from "../types/interfaces";
 import { useCartStore } from "@/store/cart";
 import { useCouponStore } from "@/store/coupon";
-import { useAuthStore } from "@/store/auth"; 
+import { useProductStore } from "@/store/products";
+import { useAuthStore } from "@/store/auth";
 
 export default defineComponent({
   components: { HeaderComponent, FooterComponent },
   setup() {
     const route = useRoute();
-    const produto = ref<Produto | null>(null);
     const cartStore = useCartStore();
     const couponStore = useCouponStore();
+    const productStore = useProductStore();
     const authStore = useAuthStore();
-
+    
+    const produto = ref<any | null>(null);
     const hover = ref(false);
     const cupomDigitado = ref("");
     const desconto = ref(0);
     const mensagemCupom = ref("");
-
+    const loading = ref(true);
     const user = authStore.getUser();
-    
-    // Simulando um produto (mock)
-    const produtoMock: Produto = {
-      id: "12345",
-      nome: "Tênis Esportivo X",
-      preco: 299.99,
-      imagem1: "https://preview.redd.it/lu8nhkt27anb1.jpg?auto=webp&s=fc33f9f515e7c8dceca7828cddf4941390962095",
-      imagem2: "https://cdn-images.dzcdn.net/images/artist/ee3e58cbff48a6e1f47b0e21ff66ee95/1900x1900-000000-80-0-0.jpg",
-      categoria: ["Tênis", "Esportivo"],
-      seller: "Loja Oficial XYZ",
-      descricao: "Tênis confortável para prática esportiva. Leve e resistente.",
+
+    console.log("Página carregada, verificando parâmetros...");
+    console.log("ID do produto na rota:", route.params.id);
+
+    const carregarProduto = async () => {
+      const productId = Number(route.params.id); 
+
+      if (isNaN(productId)) {
+        console.error("ID inválido na URL");
+        loading.value = false;
+        return;
+      }
+
+      console.log("Buscando produto com ID:", productId);
+      
+      await productStore.fetchProductById(productId);
+      
+      console.log("Produto retornado da store:", productStore.product);
+
+      if (productStore.product) {
+        produto.value = productStore.product;
+        console.log("Produto carregado:", produto.value);
+      } else {
+        console.error("Produto não encontrado.");
+      }
+
+      loading.value = false;
     };
 
-    produto.value = produtoMock;
+    onMounted(carregarProduto);
 
     const aplicarCupom = () => {
       if (!user) {
@@ -89,22 +117,21 @@ export default defineComponent({
 
       const resultado = couponStore.validateCoupon(cupomDigitado.value, user.id);
       if (resultado.valid) {
-        desconto.value = resultado.discount ?? 0; // Garante que desconto sempre tenha um número
+        desconto.value = resultado.discount ?? 0; 
         mensagemCupom.value = "Cupom aplicado com sucesso!";
       } else {
         mensagemCupom.value = resultado.message ?? '';
       }
-
     };
 
     const precoComDesconto = computed(() => {
       if (!produto.value) return 0;
-      return produto.value.preco * ((100 - desconto.value) / 100);
+      return produto.value.price * ((100 - desconto.value) / 100);
     });
 
-    const adicionarAoCarrinho = (produto: Produto | null) => {
+    const adicionarAoCarrinho = (produto: any) => {
       if (produto) {
-        cartStore.addCartItem({ ...produto, preco: precoComDesconto.value });
+        cartStore.addCartItem({ ...produto, price: precoComDesconto.value });
       }
     };
 
@@ -117,6 +144,7 @@ export default defineComponent({
 
     return {
       produto,
+      loading,
       adicionarAoCarrinho,
       hover,
       cupomDigitado,
@@ -133,7 +161,10 @@ export default defineComponent({
 <style scoped>
 .product-image {
   max-width: 100%;
-  height: auto;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   transition: opacity 0.3s ease-in-out;
 }
 

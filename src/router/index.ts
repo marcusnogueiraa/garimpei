@@ -25,7 +25,7 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterView,
   },
   {
-    path: '/product',
+    path: '/product/:id',
     name: 'product',
     component: ProductView
   },

@@ -41,14 +41,14 @@
       <div class="d-flex gap-4">
          <form @submit.prevent="searchProduct" class="search-box">
             <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Buscar produtos..."
-            class="form-control w-100"
-          />
-          <button class="btn btn-outline-light">
-            <i class="fas fa-search"></i>
-          </button>
+              type="text"
+              v-model="searchQuery"
+              placeholder="Buscar produtos..."
+              class="form-control w-100"
+            />
+            <button class="btn btn-outline-light">
+              <i class="fas fa-search"></i>
+            </button>
          </form>
          <div class="cart-icon-container" @click="openCart">
           <img src="../../assets/bag.svg" alt="Loja" class="cart-icon" />
@@ -63,27 +63,27 @@
     <div class="side-menu">
       <button class="close-btn" @click="toggleSideMenu">&times;</button>
       <ul>
-        <li @click="$router.push('/sell-product')">Vender Produto</li>
-        <li @click="$router.push('/my-products')">Meus Produto</li>
-        <li @click="$router.push('/dashboard')">Dashboard</li>
+        <li v-if="userRole === 'seller'" @click="$router.push('/sell-product')">Vender Produto</li>
+        <li v-if="userRole === 'seller'" @click="$router.push('/my-products')">Meus Produtos</li>
+        <li v-if="userRole === 'seller'" @click="$router.push('/dashboard')">Dashboard</li>
         <li @click="$router.push('/favorites')">Ver Favoritos</li>
         <li @click="logout">Logout</li>
       </ul>
     </div>
   </aside>
-  
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue';
-import { useRoute,useRouter } from 'vue-router';
-import { useAuthStore } from '@/store/auth';
-import { useSearchStore } from '@/store/search';  
-import { useCartStore } from '@/store/cart';
-import { useAuthGuard } from '@/composables/useAuthGuard'; 
+import { defineComponent, reactive, ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "@/store/auth";
+import { useSearchStore } from "@/store/search";  
+import { useCartStore } from "@/store/cart";
+import { useAuthGuard } from "@/composables/useAuthGuard"; 
+import api from "@/api/axios";
 
 export default defineComponent({
-  name: 'NavBar',
+  name: "NavBar",
   setup() {
     const searchStore = useSearchStore();
     const authStore = useAuthStore();
@@ -92,13 +92,14 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const sideMenuOpen = ref(false);
+    const userRole = ref<string | null>(null); // Guardar a role do usuário
 
     const { requireLogin } = useAuthGuard();
     
     const categorias = reactive([
-      { nome: 'Roupas', ativo: false, tipos: ['Vestidos', 'Camisetas', 'Calças', 'Jaquetas'] },
-      { nome: 'Acessórios', ativo: false, tipos: ['Bolsas', 'Óculos', 'Bijuterias', 'Relógios'] },
-      { nome: 'Calçados', ativo: false, tipos: ['Tênis', 'Sandálias', 'Botas', 'Sapatos'] }
+      { nome: "Roupas", ativo: false, tipos: ["Vestidos", "Camisetas", "Calças", "Jaquetas"] },
+      { nome: "Acessórios", ativo: false, tipos: ["Bolsas", "Óculos", "Bijuterias", "Relógios"] },
+      { nome: "Calçados", ativo: false, tipos: ["Tênis", "Sandálias", "Botas", "Sapatos"] }
     ]);
 
     const searchQuery = ref(searchStore.query); 
@@ -113,50 +114,66 @@ export default defineComponent({
     };
 
     const searchProduct = () => {
-    if (typeof searchQuery.value === 'string' && searchQuery.value.trim() !== '') {
-      searchStore.setSearchQuery(searchQuery.value);
+      if (typeof searchQuery.value === "string" && searchQuery.value.trim() !== "") {
+        searchStore.setSearchQuery(searchQuery.value);
 
-      if (route.name === 'search') {
-        router.replace({ name: 'search', query: { q: searchQuery.value } });
-      } else {
-        router.push({ name: 'search', query: { q: searchQuery.value } });
+        if (route.name === "search") {
+          router.replace({ name: "search", query: { q: searchQuery.value } });
+        } else {
+          router.push({ name: "search", query: { q: searchQuery.value } });
+        }
       }
-    }
-  };
+    };
 
-
-  const searchForItem = (item: string) => {
-    searchStore.setSearchQuery(item);
-    searchQuery.value = item;
-
-    router.push({ path: '/search', query: { q: item } });
-  };
+    const searchForItem = (item: string) => {
+      searchStore.setSearchQuery(item);
+      searchQuery.value = item;
+      router.push({ path: "/search", query: { q: item } });
+    };
 
     const openCart = () => {
-      requireLogin(()=>{
-        router.push('/cart');
-      })
+      requireLogin(() => {
+        router.push("/cart");
+      });
     };
 
     const logout = () => {
       authStore.logout();
-      router.push('/').then(() => {
+      router.push("/").then(() => {
         window.location.reload();
       });
     };
 
-    return { 
-      user, 
-      categorias, 
-      searchQuery, 
+    /** 🔥 Obtém a role do usuário logado */
+    const fetchUserRole = async () => {
+      try {
+        const response = await api.get("/users/me?populate=role", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        });
+        userRole.value = response.data.role.name;
+        console.log("Role do usuário:", userRole.value);
+      } catch (error) {
+        console.error("Erro ao buscar role do usuário:", error);
+        userRole.value = null;
+      }
+    };
+
+    // Buscar a role do usuário ao carregar o componente
+    onMounted(fetchUserRole);
+
+    return {
+      user,
+      categorias,
+      searchQuery,
       cartItemCount,
-      searchProduct, 
-      searchForItem, 
-      toggleDropdown, 
-      openCart, 
-      logout, 
-      toggleSideMenu, 
-      sideMenuOpen
+      searchProduct,
+      searchForItem,
+      toggleDropdown,
+      openCart,
+      logout,
+      toggleSideMenu,
+      sideMenuOpen,
+      userRole, // Expor a role do usuário
     };
   }
 });

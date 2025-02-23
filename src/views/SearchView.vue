@@ -28,9 +28,26 @@
                 </aside>     
                 <section class="search-results">
                     <p>Exibindo resultados para "{{ search }}"...</p>
-                    <div>
-                        resultados
+
+                    <div v-if="filteredProducts.length === 0" class="text-center">
+                        <p class="text-muted">Nenhum produto encontrado.</p>
                     </div>
+                  
+                      <div class="row mt-4">
+                        <productCard 
+                          v-for="(item, index) in filteredProducts" 
+                          :seller="item.seller" 
+                            :key="index" 
+                            :id="item.id"
+                            :nome="item.name" 
+                            :preco="item.price" 
+                            :imagem1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
+                            :imagem2="item.image2?.url ? `http://localhost:1337${item.image2.url}` : ''"
+                            :categoria="item.tags"
+                            :descricao="item.description"
+                          class="col-md-3 mt-2"
+                        />
+                      </div>
                 </section>
             </div>
         </main>
@@ -41,17 +58,21 @@
 <script lang="ts">
 import FooterComponent from '@/components/footer/footerComponent.vue';
 import HeaderComponent from '@/components/header/headerComponent.vue';
-import { defineComponent, ref, watch, onMounted } from 'vue';
+import productCard from '@/components/card/productCard.vue';
+import { defineComponent, ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchStore } from '@/store/search';  
+import { useProductStore } from '@/store/products';
 
 export default defineComponent({
     components: {
         HeaderComponent,
-        FooterComponent
+        FooterComponent,
+        productCard
     },
     setup() {
         const searchStore = useSearchStore();
+        const productStore = useProductStore();
         const route = useRoute();
         const router = useRouter();
         const search = ref((route.query.q as string) || searchStore.query);
@@ -59,16 +80,34 @@ export default defineComponent({
         const maxPrice = ref(1000);
         const sortBy = ref('relevance');
         const categories = ref(['Vestidos', 'Camisetas', 'Calças', 'Jaquetas', 'Bolsas', 'Óculos', 'Tênis']);
+        
 
-        onMounted(() => {
+        onMounted(async () => {
+            await productStore.fetchProducts();
             if (typeof route.query.q === 'string') {
                 searchStore.setSearchQuery(route.query.q);
                 search.value = route.query.q;
             }
         });
 
-        return { search, selectedCategory, maxPrice, sortBy, categories };
-    }
+
+        watch(() => route.query.q, (newQuery) => {
+            if (typeof newQuery === 'string') {
+                searchStore.setSearchQuery(newQuery);
+                search.value = newQuery;
+            }
+        });
+
+        const filteredProducts = computed(() => {
+            if (!search.value) return productStore.products;
+            return productStore.products.filter((product) =>
+                product.name.toLowerCase().includes(search.value.toLowerCase())
+            );
+        });
+
+        return { search,filteredProducts , selectedCategory, maxPrice, sortBy, categories };
+    },
+    
 });
 </script>
 
