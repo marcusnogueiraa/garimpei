@@ -30,24 +30,31 @@
       </div>
       <div class="row mt-4">
         <ProductCard 
-          v-for="(item, index) in produtos" 
-          :seller="item.seller" 
-          :key="index" 
-          :id="item.id"
-          :nome="item.name" 
-          :preco="item.price" 
-          :imagem1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
-          :imagem2="item.image2?.url ? `http://localhost:1337${item.image2.url}` : ''"
-          :categoria="item.tags"
-          :descricao="item.description"
-          class="col-md-3 mt-2"
-        />
+      v-for="(item, index) in produtos" 
+      :key="index" 
+      :id="item.id"
+      :documentId="item.documentId"
+      :name="item.name" 
+      :description="item.description"
+      :price="item.price" 
+      :quantity="item.quantity"
+      :slug="item.slug"
+      :wasSold="item.wasSold"
+      :tags="item.tags"
+      :createdAt="item.createdAt"
+      :updatedAt="item.updatedAt"
+      :publishedAt="item.publishedAt"
+      :image1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
+      class="col-md-3 mt-2"
+    />
+
+
       </div>
     </section>
 
     <FooterComponent />
 
-    <!-- Modal para aceitar os termos -->
+
     <div v-if="showTermsModal" class="modal-backdrop">
       <div class="modal-content">
         <h3>Termos de Uso para Vendedores</h3>
@@ -128,17 +135,17 @@ export default defineComponent({
           return;
         }
 
-        const userId = user.id; // ID do usuário logado
-        const newRoleId = 3; // ID da role "Seller"
+        const userId = user.id; 
+        const newRoleId = 3; 
 
         const response = await api.put(
-          `/users/${userId}`,  // Atualiza o usuário logado
-          { role: newRoleId }, // Define a nova role
+          `/users/${userId}`,  
+          { role: newRoleId }, 
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
 
         if (response.status === 200) {
-          userRole.value = "Seller";
+          userRole.value = "seller";
           showTermsModal.value = false;
           router.push("/sell-product");
         } else {

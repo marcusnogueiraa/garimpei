@@ -34,19 +34,19 @@
                     </div>
                   
                       <div class="row mt-4">
-                        <productCard 
-                          v-for="(item, index) in filteredProducts" 
-                          :seller="item.seller" 
+                        <ProductCard 
+                            v-for="(item, index) in filteredProducts" 
                             :key="index" 
                             :id="item.id"
-                            :nome="item.name" 
-                            :preco="item.price" 
-                            :imagem1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
-                            :imagem2="item.image2?.url ? `http://localhost:1337${item.image2.url}` : ''"
-                            :categoria="item.tags"
-                            :descricao="item.description"
-                          class="col-md-3 mt-2"
-                        />
+                            :name="item.name" 
+                            :price="item.price" 
+                            :image1="formatImage(item.image1)"
+                            :tags="item.tags"
+                            :description="item.description"
+                            :seller="item.seller"
+                            class="col-md-3 mt-2"
+                            />
+
                       </div>
                 </section>
             </div>
@@ -105,7 +105,14 @@ export default defineComponent({
             );
         });
 
-        return { search,filteredProducts , selectedCategory, maxPrice, sortBy, categories };
+        const formatImage = (image: string | { url?: string } | null): string => {
+            if (!image) return ''; 
+            if (typeof image === 'string') return image; 
+            if (typeof image === 'object' && image.url) return `http://localhost:1337${image.url}`; 
+            return ''; 
+        };
+
+        return { search,filteredProducts, formatImage , selectedCategory, maxPrice, sortBy, categories };
     },
     
 });

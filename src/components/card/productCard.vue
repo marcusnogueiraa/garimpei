@@ -10,18 +10,11 @@
         <div class="star position-absolute" @click.stop="toggleFavorite">
           <i :class="isFavorite ? 'fa fa-star' : 'far fa-star'"></i>
         </div>
-        <img :src="imagem1" :alt="nome" class="product-image object-fit-cover" />
-        <h5 class="card-title mt-3">{{ nome }}</h5>
-        <p class="text-muted">{{ seller }}</p>
-        <p class="fw-bold"> {{ formatPrice(preco) }} </p>
-        <div class="buttons">
-          <button @click.stop="toggleCart" class="btn btn-outline-primary">
-            {{ isInCart ? 'Remover do Carrinho' : 'Adicionar ao Carrinho' }}
-          </button>
-        </div>
+        <img :src="productImage" :alt="name" class="product-image object-fit-cover" />
+        <h5 class="card-title mt-3">{{ name }}</h5>
+        <p class="fw-bold">{{ formatPrice(price) }}</p>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -32,6 +25,7 @@ import { useCartStore } from '@/store/cart';
 import { useFavoriteStore } from '@/store/favorites';
 import { Produto } from '../../types/interfaces';
 import { useAuthGuard } from '@/composables/useAuthGuard'; 
+import api from '@/api/axios';
 
 const props = defineProps<Produto>();
 
@@ -69,12 +63,32 @@ const toggleFavorite = () => {
   });
 };
 
+// Ajustando o caminho correto da imagem
+const productImage = computed(() => props.image1 || '');
+
+
 const formatPrice = (price: number): string => {
   return price.toLocaleString('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   });
 };
+
+// async function fetchUserById(id: number) {
+//     try {
+//       const response = await api.get(`/users?filters[id][$eq]=${id}&populate=*`);
+  
+//       if (!response.data || !response.data.data || response.data.data.length === 0) {
+//         console.error("Erro: User não encontrado.", response);
+//         return;
+//       }
+      
+//       console.log(response.data.data)
+//       return  response.data.data.username
+//     } catch (err) {
+//       console.error('Erro ao buscar produto:', err);
+//     } 
+//   }
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@
         <div v-else class="row">
           <div class="col-md-4 d-flex justify-content-center">
             <img 
-              :src="hover && produto?.image2 ? produto?.image2 : produto?.image1" 
+              :src="`http://localhost:1337${produto.image1.url}`" 
               :alt="produto?.name" 
               class="img-fluid product-image"
               @mouseover="hover = true" 
@@ -41,7 +41,7 @@
             </div>
             <p v-if="mensagemCupom" class="text">{{ mensagemCupom }}</p>
 
-            <!-- Adicionar ao carrinho -->
+
             <button class="btn btn-success mt-3" @click="adicionarAoCarrinho(produto)">Adicionar ao carrinho</button>
           </div>
         </div>
@@ -159,9 +159,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.product-page{
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .product-image {
   max-width: 100%;
-  height: 100dvh;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

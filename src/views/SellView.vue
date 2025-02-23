@@ -30,14 +30,13 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Categorias</label>
-              <input type="text" v-model="categoriaInput" class="form-control" @keyup.enter.prevent="addCategoria"
-                placeholder="Digite uma categoria e pressione Enter" />
-              <div class="category-tags mt-2">
-                <span v-for="(cat, index) in produto.tags" :key="index" class="badge bg-secondary me-2">
-                  {{ cat }} <span @click="removeCategoria(index)" class="ms-1 text-light" style="cursor:pointer;">×</span>
-                </span>
-              </div>
+              <label class="form-label">Tags</label>
+              <select v-model="produto.tags" class="form-control" required>
+                <option disabled value="">Selecione uma categoria</option>
+                <option v-for="category in productCategories" :key="category" :value="category">
+                  {{ category }}
+                </option>
+              </select>
             </div>
 
             <div class="mb-3">
@@ -70,6 +69,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useProductStore } from '@/store/products';
 import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
+import { ProductCategory } from '@/types/interfaces';
 
 export default defineComponent({
   name: 'SellProduct',
@@ -82,24 +82,13 @@ export default defineComponent({
       description: '',
       price: 0,
       quantity: 0,
-      tags: [] as string[],
+      tags: '' as ProductCategory,
       wasSold: false,
       image1: null as { url: string } | null,
       image2: null as { url: string } | null,
     });
 
-    const categoriaInput = ref('');
-
-    const addCategoria = () => {
-      if (categoriaInput.value.trim() && produto.value.tags.length < 5) {
-        produto.value.tags.push(categoriaInput.value.trim());
-        categoriaInput.value = '';
-      }
-    };
-
-    const removeCategoria = (index: number) => {
-      produto.value.tags.splice(index, 1);
-    };
+    const productCategories = Object.values(ProductCategory);
 
     const formValido = computed(() => {
       return (
@@ -107,7 +96,7 @@ export default defineComponent({
         produto.value.description.trim() !== '' &&
         produto.value.price > 0 &&
         produto.value.quantity >= 0 &&
-        produto.value.tags.length > 0
+        produto.value.tags !== undefined 
       );
     });
 
@@ -139,7 +128,7 @@ export default defineComponent({
       }
     };
 
-    return { produto, categoriaInput, addCategoria, removeCategoria, formValido, handleImageUpload, submitForm };
+    return { produto, productCategories, formValido, handleImageUpload, submitForm };
   }
 });
 </script>
@@ -157,11 +146,6 @@ textarea {
 .card {
   max-width: 600px;
   margin: auto;
-}
-
-.category-tags {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .image-upload-container {
