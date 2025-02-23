@@ -25,16 +25,10 @@ O objetivo é a ampliação do alcance de vendas, fortalecimento financeiro e a 
 ## :triangular_flag_on_post:	 Principais funcionalidades da aplicação
 
 > Visualizar e buscar produtos (todos) </br>
-> Visualizar lojas (todos) </br>
 > Adcionar ao carrinho (cliente e vendedor) </br>
 > Realizar compra (cliente e vendedor) </br>
-> Cadastrar produto (vendedor) </br>
-> Gerenciar lojas (vendedor) </br>
 > Gerenciar produtos (vendedor) </br>
-> Visualizar estoque (vendedor) </br>
 > Visualizar histórico de vendas (vendedor) </br>
-> Avaliar produto (cliente) </br>
-> Visualizar avaliações (todos) </br>
 > Gerenciar cupoms (vendedor) </br>
 
 ## :spiral_calendar: Entidades ou tabelas do sistema
