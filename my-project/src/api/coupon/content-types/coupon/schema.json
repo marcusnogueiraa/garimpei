@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coupons",
+  "info": {
+    "singularName": "coupon",
+    "pluralName": "coupons",
+    "displayName": "Coupon",
+    "description": "Coupons for discounts"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "code": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "whoUsedId": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user"
+    },
+    "seller": {
+      "type": "integer",
+      "required": true
+    },
+    "discount": {
+      "type": "float",
+      "required": true
+    },
+    "expiryDate": {
+      "type": "date",
+      "required": true
+    }
+  }
+}
