@@ -55,7 +55,7 @@ const routes: Array<RouteRecordRaw> = [
     component: SellView
   },
   {
-    path: '/my-products',
+    path: '/my-products', 
     name: 'my-products',
     component: MyProductsView
   },

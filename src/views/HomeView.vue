@@ -66,6 +66,7 @@ import { useAuthStore } from '@/store/auth';
 import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
 import ProductCard from '@/components/card/productCard.vue';
+import { useAuthGuard } from '@/composables/useAuthGuard'; 
 
 export default defineComponent({
   name: 'HomePage',
@@ -108,13 +109,13 @@ export default defineComponent({
     };
 
     // TODO: verificar o token dps
-    const handleSellClick = () => {
-      if (user.id) {
-        router.push('/sell-product'); 
-      } else {
-        router.push('/login');
-      }
-    };
+  const { requireLogin } = useAuthGuard();
+
+  const handleSellClick = () => {
+    requireLogin(() => {
+      router.push('/sell-product');
+    });
+  };
 
     return { produtos, vestidos, scrollToProducts, handleSellClick, produtosSection };
   },

@@ -21,6 +21,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import { useRouter } from 'vue-router';
 import { useCartStore } from '@/store/cart';
 import { useFavoriteStore } from '@/store/favorites';
 import { Produto } from '../../types/interfaces';
+import { useAuthGuard } from '@/composables/useAuthGuard'; 
 
 const props = defineProps<Produto>();
 
@@ -41,24 +43,30 @@ const favoriteStore = useFavoriteStore();
 const isInCart = computed(() => cartStore.cart.some(item => item.id === props.id));
 const isFavorite = computed(() => favoriteStore.favorites.some(item => item.id === props.id));
 
+const { requireLogin } = useAuthGuard();
+
 const goToProduct = () => {
   router.push(`/product/${props.id}`);
 };
 
 const toggleCart = () => {
-  if (isInCart.value) {
-    cartStore.removeCartItem(props.id);
-  } else {
-    cartStore.addCartItem({ ...props });
-  }
+  requireLogin(() => {
+    if (isInCart.value) {
+      cartStore.removeCartItem(props.id);
+    } else {
+      cartStore.addCartItem({ ...props });
+    }
+  });
 };
 
 const toggleFavorite = () => {
-  if (isFavorite.value) {
-    favoriteStore.removeFavorite(props.id);
-  } else {
-    favoriteStore.addFavorite({ ...props });
-  }
+  requireLogin(() => {
+    if (isFavorite.value) {
+      favoriteStore.removeFavorite(props.id);
+    } else {
+      favoriteStore.addFavorite({ ...props });
+    }
+  });
 };
 
 const formatPrice = (price: number): string => {
@@ -78,9 +86,7 @@ const formatPrice = (price: number): string => {
   top: 6px;
   right: 6px;
   cursor: pointer;
-
   color: #ffff00;
-
   opacity: 0;
   visibility: hidden;
 }

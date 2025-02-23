@@ -4,7 +4,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <router-link to="/" class="text-light fw-bold">Garimpei</router-link>
       </div>
-      <div v-if="user.username" class="d-flex align-items-center">
+      <div v-if="user" class="d-flex align-items-center">
         <span class="text-light fw-bold me-3">Olá, {{ user.username }}!</span>
         <div class="menu-icon" @click="toggleSideMenu">
           <i class="fas fa-bars text-light"></i>
@@ -30,7 +30,7 @@
           <a href="#" class="nav-link text-light">{{ categoria.nome }}</a>
           <transition name="fade">
             <ul v-if="categoria.ativo" class="dropdown">
-              <li v-for="(item, i) in categoria.tipos" :key="i" @click="buscarPorItem(item)">
+              <li v-for="(item, i) in categoria.tipos" :key="i" @click="searchForItem(item)">
                 <a href="#" class="dropdown-item" >{{ item }}</a>
               </li>
             </ul>
@@ -39,7 +39,7 @@
       </div>
       
       <div class="d-flex gap-4">
-         <form @submit.prevent="buscarProduto" class="search-box">
+         <form @submit.prevent="searchProduct" class="search-box">
             <input
             type="text"
             v-model="searchQuery"
@@ -74,12 +74,12 @@
 </template>
 
 <script lang="ts">
-// TODO: corrigir -o v-if do template para verificar token
 import { defineComponent, reactive, ref, computed } from 'vue';
 import { useRoute,useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import { useSearchStore } from '@/store/search';  
 import { useCartStore } from '@/store/cart';
+import { useAuthGuard } from '@/composables/useAuthGuard'; 
 
 export default defineComponent({
   name: 'NavBar',
@@ -92,8 +92,7 @@ export default defineComponent({
     const route = useRoute();
     const sideMenuOpen = ref(false);
 
-    // TODO: VERIFICAR JSON QUANDO USUARIO NAO EXISTE OU NAO TA LOGADO
-    console.log(user);
+    const { requireLogin } = useAuthGuard();
     
     const categorias = reactive([
       { nome: 'Roupas', ativo: false, tipos: ['Vestidos', 'Camisetas', 'Calças', 'Jaquetas'] },
@@ -112,7 +111,7 @@ export default defineComponent({
       sideMenuOpen.value = !sideMenuOpen.value;
     };
 
-    const buscarProduto = () => {
+    const searchProduct = () => {
     if (typeof searchQuery.value === 'string' && searchQuery.value.trim() !== '') {
       searchStore.setSearchQuery(searchQuery.value);
 
@@ -125,7 +124,7 @@ export default defineComponent({
   };
 
 
-  const buscarPorItem = (item: string) => {
+  const searchForItem = (item: string) => {
     searchStore.setSearchQuery(item);
     searchQuery.value = item;
 
@@ -133,7 +132,9 @@ export default defineComponent({
   };
 
     const openCart = () => {
-      router.push('/cart');
+      requireLogin(()=>{
+        router.push('/cart');
+      })
     };
 
     const logout = () => {
@@ -141,14 +142,13 @@ export default defineComponent({
       router.push('/');
     };
 
-    // TODO: botar tudo em ingles
     return { 
       user, 
       categorias, 
       searchQuery, 
       cartItemCount,
-      buscarProduto, 
-      buscarPorItem, 
+      searchProduct, 
+      searchForItem, 
       toggleDropdown, 
       openCart, 
       logout, 

@@ -7,7 +7,16 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref<string>(localStorage.getItem('token') ?? ''); 
 
   function getUser() {
-    return JSON.parse(localStorage.getItem('user') || '');
+    const user = localStorage.getItem('user'); 
+    if (user && user.trim() !== '') { 
+      try {
+        return JSON.parse(user); 
+      } catch (error) {
+        console.error('Erro ao fazer parse do usuário:', error);
+        return null; 
+      }
+    }
+    return null; 
   }
 
   async function register(name: string, email: string, password: string) {

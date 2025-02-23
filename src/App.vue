@@ -1,6 +1,19 @@
 <template>
-  <router-view/>
+  <div id="app">
+    <router-view />
+    <LoginRequired :show="loginRequired" @close="loginRequired = false"  />
+  </div>
 </template>
+
+<script lang="ts" setup>
+import { ref} from 'vue';
+import { useAuthGuard } from '@/composables/useAuthGuard';
+import LoginRequired from '@/components/loginRequired.vue';
+
+const { loginRequired } = useAuthGuard();
+
+
+</script>
 
 <style>
 #app {
