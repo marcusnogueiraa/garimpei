@@ -11,17 +11,17 @@
               Descubra peças únicas em brechós selecionados. Compre e venda moda de segunda mão de forma fácil e sustentável.
             </p>
             <div class="d-flex gap-3 mt-3 justify-content-center align-items-center">
-              <a href="#produtos" class="btn btn-success">Explorar Produtos</a>
-              <button class="btn btn-outline-light" @click="$router.push('/sell-product')">Comece a Vender</button>
+              <button class="btn btn-success" @click="scrollToProducts">Explorar Produtos</button>
+              <button class="btn btn-outline-light" @click="handleSellClick">Comece a Vender</button>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <section class="container my-5">
+    <section class="container my-5" ref="produtosSection">
       <h4 class="fw-bold">Últimas Novidades</h4>
-      <div class="row mt-4" id="produtos">
+      <div class="row mt-4">
         <ProductCard 
           v-for="(item, index) in produtos" 
           :key="index" 
@@ -61,6 +61,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
 import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
 import ProductCard from '@/components/card/productCard.vue';
@@ -68,6 +70,10 @@ import ProductCard from '@/components/card/productCard.vue';
 export default defineComponent({
   name: 'HomePage',
   setup() {
+    const router = useRouter();
+    const userStore = useUserStore();
+    const produtosSection = ref<HTMLElement | null>(null);
+
     const produtos = ref([
       { 
         id: 'vestido-vintage-floral',
@@ -90,8 +96,26 @@ export default defineComponent({
     ]);
 
     const vestidos = ref(produtos.value.filter(item => item.categoria.includes('Brechó')));
-    
-    return { produtos, vestidos };
+
+    const scrollToProducts = () => {
+      if (produtosSection.value) {
+        const navbarHeight = document.querySelector('.sticky-nav')?.clientHeight || 0; 
+        const offset = produtosSection.value.getBoundingClientRect().top + window.scrollY - navbarHeight - 20; 
+
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    };
+
+
+    const handleSellClick = () => {
+      if (userStore.name) {
+        router.push('/sell-product'); 
+      } else {
+        router.push('/login');
+      }
+    };
+
+    return { produtos, vestidos, scrollToProducts, handleSellClick, produtosSection };
   },
   components: {
     HeaderComponent,
