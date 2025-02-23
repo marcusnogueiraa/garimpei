@@ -87,10 +87,13 @@ export default defineComponent({
     const searchStore = useSearchStore();
     const authStore = useAuthStore();
     const cartStore = useCartStore();
-    const user = authStore.user;
+    const user = authStore.getUser();
     const router = useRouter();
     const route = useRoute();
     const sideMenuOpen = ref(false);
+
+    // TODO: VERIFICAR JSON QUANDO USUARIO NAO EXISTE OU NAO TA LOGADO
+    console.log(user);
     
     const categorias = reactive([
       { nome: 'Roupas', ativo: false, tipos: ['Vestidos', 'Camisetas', 'Calças', 'Jaquetas'] },
@@ -134,7 +137,7 @@ export default defineComponent({
     };
 
     const logout = () => {
-      user.name = ''; 
+      authStore.logout();
       router.push('/');
     };
 

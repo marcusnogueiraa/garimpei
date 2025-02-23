@@ -6,6 +6,10 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<any>(null);
   const token = ref<string>(localStorage.getItem('token') ?? ''); 
 
+  function getUser() {
+    return JSON.parse(localStorage.getItem('user') || '');
+  }
+
   async function register(name: string, email: string, password: string) {
     const response = await api.post('/auth/local/register', { 
       username: name,
@@ -57,5 +61,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token');
   }
 
-  return { user, token, register, login, logout };
+  return { user, token, register, login, logout, getUser};
 });
