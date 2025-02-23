@@ -1,8 +1,8 @@
 <template>
     <div class="vh-100 d-flex flex-column position-relative">
       <HeaderComponent />
-      <main class="h-100 p-4">
-        <h2>Seus Favoritos</h2>
+      <main class="h-100 p-4 animate-spawn">
+        <h2 class="fw-bold">Seus Favoritos</h2>
         <div v-if="favoriteStore.favorites.length === 0" class="h-100 d-flex justify-content-center align-items-center">
           <div>
             <img src="../assets/fav_icon.svg" class="empty-favorites-icon" alt="">
@@ -53,6 +53,17 @@
   <style scoped>
   .empty-favorites-icon {
     width: 300px;
+  }
+
+  .animate-spawn{
+    animation: spawn .2s forwards;
+  }
+  
+  @keyframes spawn {
+      from{
+        opacity: 0;
+        transform: translateY(-8px);
+      }
   }
   </style>
   

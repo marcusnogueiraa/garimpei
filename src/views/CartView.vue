@@ -1,8 +1,8 @@
 <template>
     <div class="vh-100 d-flex flex-column position-relative">
       <HeaderComponent />
-      <main class="h-100 p-4">
-        <h2>Meu carrinho</h2>
+      <main class="h-100 p-4 animate-spawn">
+        <h2 class="fw-bold">Meu Carrinho</h2>
         <div v-if="cartStore.cart.length === 0" class="h-100 d-flex justify-content-center align-items-center">
           <div>
             <img src="../assets/empty_cart.svg" class="empty-cart-icon" alt="">
@@ -56,6 +56,17 @@
   <style scoped>
   .empty-cart-icon {
     width: 300px;
+  }
+
+  .animate-spawn{
+    animation: spawn .2s forwards;
+  }
+  
+  @keyframes spawn {
+      from{
+        opacity: 0;
+        transform: translateY(-8px);
+      }
   }
   </style>
   

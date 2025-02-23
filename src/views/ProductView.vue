@@ -2,29 +2,23 @@
   <div class="product-page">
     <HeaderComponent />
 
-    <section class="container my-5">
+    <section class="container my-5 animate-spawn">
       <div class="p-4">
         <div class="row">
           <div class="col-md-4 d-flex justify-content-center">
-            <img :src="produto?.imagem1" :alt="produto?.nome" class="img-fluid product-image" />
+            <img 
+              :src="hover && produto?.imagem2 ? produto?.imagem2 : produto?.imagem1" 
+              :alt="produto?.nome" 
+              class="img-fluid product-image"
+              @mouseover="hover = true" 
+              @mouseleave="hover = false"
+            />
           </div>
           <div class="col-md-8">  
             <h2 class="fw-bold">{{ produto?.nome }}</h2>
             <h4 class="text-success">{{ produto?.preco }}</h4>
             <p>{{ produto?.descricao }}</p>
             <button class="btn btn-success" @click="adicionarAoCarrinho(produto)">Adicionar ao carrinho</button>
-          </div>
-        </div>
-        <div class="mt-5">
-          <h4>Avaliações</h4>
-          <div v-if="produto?.avaliacoes && produto.avaliacoes.length">
-            <div v-for="avaliacao in produto.avaliacoes" :key="avaliacao.buyer" class="mb-3">
-              <p><strong>{{ avaliacao.buyer }}</strong> - Nota: {{ avaliacao.nota }}</p>
-              <p>{{ avaliacao.comentario }}</p>
-            </div>
-          </div>
-          <div v-else>
-            <p>Este produto ainda não possui avaliações.</p>
           </div>
         </div>
       </div>
@@ -51,20 +45,22 @@ export default defineComponent({
     const route = useRoute();
     const produto = ref<Produto | null>(null);
     const cartStore = useCartStore();
+    const hover = ref(false);
 
-    const fetchProduto = async (id: number) => {
-      // Substitua pelo seu método de busca, por exemplo, uma chamada HTTP para sua API
-      const response = await fetch(`/api/produtos/${id}`);
-      if (response.ok) {
-        produto.value = await response.json();
-      }
+    // Simulando um produto (mock)
+    const produtoMock: Produto = {
+      id: "12345",
+      nome: "Tênis Esportivo X",
+      preco: 299.99,
+      imagem1: "https://preview.redd.it/lu8nhkt27anb1.jpg?auto=webp&s=fc33f9f515e7c8dceca7828cddf4941390962095",
+      imagem2: "https://cdn-images.dzcdn.net/images/artist/ee3e58cbff48a6e1f47b0e21ff66ee95/1900x1900-000000-80-0-0.jpg",
+      categoria: ["Tênis", "Esportivo"],
+      seller: "Loja Oficial XYZ",
+      descricao: "Tênis confortável para prática esportiva. Leve e resistente.",
     };
 
     onMounted(() => {
-      const produtoId = Number(route.params.id);
-      if (!isNaN(produtoId)) {
-        fetchProduto(produtoId);
-      }
+      produto.value = produtoMock;
     });
 
     const adicionarAoCarrinho = (produto: Produto | null) => {
@@ -73,7 +69,7 @@ export default defineComponent({
       }
     };
 
-    return { produto, adicionarAoCarrinho };
+    return { produto, adicionarAoCarrinho, hover };
   }
 });
 </script>
@@ -82,5 +78,17 @@ export default defineComponent({
 .product-image {
   max-width: 100%;
   height: auto;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.animate-spawn{
+  animation: spawn .2s forwards;
+}
+
+@keyframes spawn {
+    from{
+      opacity: 0;
+      transform: translateY(-8px);
+    }
 }
 </style>

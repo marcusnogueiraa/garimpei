@@ -79,12 +79,20 @@ const formatPrice = (price: number): string => {
   right: 6px;
   cursor: pointer;
 
-  color: yellow;
+  color: #ffff00;
+
+  opacity: 0;
+  visibility: hidden;
 }
 
 .product-card:hover {
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.6);
   transform: scale(1.05)
+}
+
+.product-card:hover .star{
+  opacity: 1;
+  visibility: visible;
 }
 
 .product-image {

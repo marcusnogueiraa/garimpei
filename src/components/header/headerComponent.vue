@@ -30,8 +30,8 @@
           <a href="#" class="nav-link text-light">{{ categoria.nome }}</a>
           <transition name="fade">
             <ul v-if="categoria.ativo" class="dropdown">
-              <li v-for="(item, i) in categoria.tipos" :key="i">
-                <a href="#" class="dropdown-item" @click="buscarPorItem(item)">{{ item }}</a>
+              <li v-for="(item, i) in categoria.tipos" :key="i" @click="buscarPorItem(item)">
+                <a href="#" class="dropdown-item" >{{ item }}</a>
               </li>
             </ul>
           </transition>
@@ -50,9 +50,10 @@
             <i class="fas fa-search"></i>
           </button>
          </form>
-          <div @click="openCart" class="d-flex align-items-center">
-            <img src="../../assets/bag.svg" alt="Loja" class="cart-icon" />
-          </div>
+         <div class="cart-icon-container" @click="openCart">
+          <img src="../../assets/bag.svg" alt="Loja" class="cart-icon" />
+          <span v-if="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
+        </div>
       </div>
     </div>
   </nav>
@@ -62,9 +63,10 @@
     <div class="side-menu">
       <button class="close-btn" @click="toggleSideMenu">&times;</button>
       <ul>
-        <li @click="logout">Logout</li>
-        <li @click="$router.push('/sell')">Vender Produto</li>
+        <li @click="$router.push('/sell-product')">Vender Produto</li>
+        <li @click="$router.push('/my-products')">Meus Produto</li>
         <li @click="$router.push('/favorites')">Ver Favoritos</li>
+        <li @click="logout">Logout</li>
       </ul>
     </div>
   </aside>
@@ -72,17 +74,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, reactive, ref, computed } from 'vue';
+import { useRoute,useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import { useSearchStore } from '@/store/search';  
+import { useCartStore } from '@/store/cart';
 
 export default defineComponent({
   name: 'NavBar',
   setup() {
     const user = useUserStore();
     const searchStore = useSearchStore();
+    const cartStore = useCartStore()
     const router = useRouter();
+    const route = useRoute();
     const sideMenuOpen = ref(false);
     
     const categorias = reactive([
@@ -92,6 +97,7 @@ export default defineComponent({
     ]);
 
     const searchQuery = ref(searchStore.query); 
+    const cartItemCount = computed(() => cartStore.cart.length);
 
     const toggleDropdown = (index: number, state: boolean) => {
       categorias[index].ativo = state;
@@ -102,17 +108,24 @@ export default defineComponent({
     };
 
     const buscarProduto = () => {
-      if (searchQuery.value.trim() !== '') {
-        searchStore.setSearchQuery(searchQuery.value);
-        router.push({ name: 'Search', query: { q: searchQuery.value } });
-      }
-    };
+    if (typeof searchQuery.value === 'string' && searchQuery.value.trim() !== '') {
+      searchStore.setSearchQuery(searchQuery.value);
 
-    const buscarPorItem = (item: string) => {
-      searchStore.setSearchQuery(item);
-      searchQuery.value = item; 
-      router.push('/search');
-    };
+      if (route.name === 'search') {
+        router.replace({ name: 'search', query: { q: searchQuery.value } });
+      } else {
+        router.push({ name: 'search', query: { q: searchQuery.value } });
+      }
+    }
+  };
+
+
+  const buscarPorItem = (item: string) => {
+    searchStore.setSearchQuery(item);
+    searchQuery.value = item;
+
+    router.push({ path: '/search', query: { q: item } });
+  };
 
     const openCart = () => {
       router.push('/cart');
@@ -127,6 +140,7 @@ export default defineComponent({
       user, 
       categorias, 
       searchQuery, 
+      cartItemCount,
       buscarProduto, 
       buscarPorItem, 
       toggleDropdown, 
@@ -159,10 +173,31 @@ export default defineComponent({
   border-color: #5b887a;
 }
 
-.cart-icon {
-  cursor: pointer;
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
 }
 
+.cart-icon {
+  cursor: pointer;
+  width: 30px;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .menu-icon{
   cursor: pointer;
 }
@@ -267,6 +302,8 @@ export default defineComponent({
   cursor: pointer;
   color: white;
   text-decoration: none;
+
+  
 }
 
 .nav-link:hover {
@@ -298,6 +335,8 @@ export default defineComponent({
 .dropdown li {
   padding: 10px 20px;
   transition: background 0.3s ease-in-out;
+
+  cursor: pointer;
 }
 
 .dropdown-item {
