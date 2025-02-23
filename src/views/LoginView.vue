@@ -7,16 +7,44 @@
       <form class="login-form-container" @submit.prevent="handleLogin">
         <InputLoginField label="Email" id="email" type="email" placeholder="seu@email.com" v-model="email" />
         <InputLoginField label="Senha" id="password" type="password" placeholder="********" v-model="password" />
-        
+
+        <p v-if="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
+
         <button type="submit" class="login-button btn btn-success w-100">Entrar</button>
       </form>
 
       <p class="text-center mt-3">
-        Não tem uma conta? <a href="\register" class="text-decoration-none">Cadastre-se</a>
+        Não tem uma conta? <a href="/register" class="text-decoration-none">Cadastre-se</a>
       </p>
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../stores/authStore';
+import { useRouter } from 'vue-router';
+import InputLoginField from '@/components/InputLoginField.vue';
+
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogin = async () => {
+  console.log("Tentando login com:", email.value, password.value);
+
+  const response = await authStore.login(email.value, password.value);
+
+  if (response.success) {
+    router.push('/');
+  } else {
+    console.log("Erro recebido:", response.message);
+    errorMessage.value = response.message;
+  }
+};
+</script>
 
 <style scoped>
 .login-page {
@@ -28,26 +56,14 @@
   width: 450px;
 }
 
-.login-form-container{
+.login-form-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.login-button{
+.login-button {
   background-color: #7C9082;
   border-color: #7C9082;
 }
 </style>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-import InputLoginField from '@/components/InputLoginField.vue';
-
-const email = ref('');
-const password = ref('');
-
-const handleLogin = () => {
-  console.log('Email:', email.value, 'Senha:', password.value);
-};
-</script>
