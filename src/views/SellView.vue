@@ -30,14 +30,13 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Categorias</label>
-              <input type="text" v-model="categoriaInput" class="form-control" @keyup.enter.prevent="addCategoria"
-                placeholder="Digite uma categoria e pressione Enter" />
-              <div class="category-tags mt-2">
-                <span v-for="(cat, index) in produto.tags" :key="index" class="badge bg-secondary me-2">
-                  {{ cat }} <span @click="removeCategoria(index)" class="ms-1 text-light" style="cursor:pointer;">×</span>
-                </span>
-              </div>
+              <label class="form-label">Tags</label>
+              <select v-model="produto.tags" class="form-control" required>
+                <option disabled value="">Selecione uma categoria</option>
+                <option v-for="category in productCategories" :key="category" :value="category">
+                  {{ category }}
+                </option>
+              </select>
             </div>
 
             <div class="mb-3">
@@ -66,52 +65,43 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useProductStore } from '@/store/products';
-import HeaderComponent from '@/components/header/headerComponent.vue';
-import FooterComponent from '@/components/footer/footerComponent.vue';
+import { defineComponent, ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import HeaderComponent from "@/components/header/headerComponent.vue";
+import FooterComponent from "@/components/footer/footerComponent.vue";
+import { ProductCategory } from "@/types/interfaces";
+import api from "@/api/axios";
 
 export default defineComponent({
-  name: 'SellProduct',
+  name: "SellProduct",
   components: { HeaderComponent, FooterComponent },
   setup() {
-    const productStore = useProductStore();
+    const router = useRouter();
 
     const produto = ref({
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       price: 0,
       quantity: 0,
-      tags: [] as string[],
+      tags: "" as ProductCategory,
       wasSold: false,
       image1: null as { url: string } | null,
       image2: null as { url: string } | null,
     });
 
-    const categoriaInput = ref('');
-
-    const addCategoria = () => {
-      if (categoriaInput.value.trim() && produto.value.tags.length < 5) {
-        produto.value.tags.push(categoriaInput.value.trim());
-        categoriaInput.value = '';
-      }
-    };
-
-    const removeCategoria = (index: number) => {
-      produto.value.tags.splice(index, 1);
-    };
+    const productCategories = Object.values(ProductCategory);
 
     const formValido = computed(() => {
       return (
-        produto.value.name.trim() !== '' &&
-        produto.value.description.trim() !== '' &&
+        produto.value.name.trim() !== "" &&
+        produto.value.description.trim() !== "" &&
         produto.value.price > 0 &&
         produto.value.quantity >= 0 &&
-        produto.value.tags.length > 0
+        produto.value.tags !== undefined
       );
     });
 
-    const handleImageUpload = (event: Event, key: 'image1' | 'image2') => {
+    const handleImageUpload = (event: Event, key: "image1" | "image2") => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
         const reader = new FileReader();
@@ -124,23 +114,59 @@ export default defineComponent({
       }
     };
 
-    const submitForm = async () => {
-      if (!formValido.value) {
-        alert('Preencha todos os campos corretamente antes de submeter.');
-        return;
-      }
-
+    const createProduct = async () => {
       try {
-        await productStore.createProduct(produto.value);
-        alert('Produto cadastrado com sucesso!');
+        const formData = new FormData();
+
+        formData.append("name", produto.value.name);
+        formData.append("description", produto.value.description);
+        formData.append("price", produto.value.price.toString());
+        formData.append("quantity", produto.value.quantity.toString());
+        formData.append("tags", produto.value.tags);
+        formData.append("wasSold", produto.value.wasSold.toString());
+
+        if (produto.value.image1 && produto.value.image1.url) {
+          const file = await urlToFile(produto.value.image1.url, "image1.jpg");
+          formData.append("files.image1", file);
+        }
+
+        if (produto.value.image2 && produto.value.image2.url) {
+          const file = await urlToFile(produto.value.image2.url, "image2.jpg");
+          formData.append("files.image2", file);
+        }
+
+        const response = await api.post("/products", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        console.log(response);
+        alert("Produto cadastrado com sucesso!");
+        router.push("/manage-products");
       } catch (error) {
-        console.error('Erro ao criar produto:', error);
-        alert('Erro ao cadastrar produto.');
+        console.error("Erro ao criar produto:", error);
+        alert("Erro ao cadastrar produto.");
       }
     };
 
-    return { produto, categoriaInput, addCategoria, removeCategoria, formValido, handleImageUpload, submitForm };
-  }
+    const urlToFile = async (url: string, filename: string): Promise<File> => {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return new File([blob], filename, { type: blob.type });
+    };
+
+    const submitForm = async () => {
+      if (!formValido.value) {
+        alert("Preencha todos os campos corretamente antes de submeter.");
+        return;
+      }
+      await createProduct();
+    };
+
+    return { produto, productCategories, formValido, handleImageUpload, submitForm };
+  },
 });
 </script>
 
@@ -157,11 +183,6 @@ textarea {
 .card {
   max-width: 600px;
   margin: auto;
-}
-
-.category-tags {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .image-upload-container {
@@ -193,7 +214,7 @@ textarea {
 }
 
 .animate-spawn {
-  animation: spawn .2s forwards;
+  animation: spawn 0.2s forwards;
 }
 
 @keyframes spawn {

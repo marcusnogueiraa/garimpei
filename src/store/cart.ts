@@ -7,11 +7,11 @@ export const useCartStore = defineStore('cart', {
   }),
   actions: {
     addCartItem(item: Produto) {
-      if (!this.cart.some(cartItem => cartItem.nome === item.nome)) {
+      if (!this.cart.some(cartItem => cartItem.id === item.id)) {
         this.cart.push(item);
       }
     },
-    removeCartItem(id: string) {
+    removeCartItem(id: number) {
       this.cart = this.cart.filter(item => item.id !== id);
     },
     clearCart() {
