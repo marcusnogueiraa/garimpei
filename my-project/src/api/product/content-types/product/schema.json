@@ -4,7 +4,8 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Product"
+    "displayName": "Product",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -30,6 +31,49 @@
       "min": 0,
       "required": true,
       "default": 1
+    },
+    "wasSold": {
+      "type": "boolean",
+      "default": false
+    },
+    "image1": {
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "image2": {
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": false
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "products"
+    },
+    "tags": {
+      "type": "enumeration",
+      "enum": [
+        "roupas",
+        "calçados",
+        "livros",
+        "ferramentas",
+        "outros"
+      ],
+      "required": true
     }
   }
 }

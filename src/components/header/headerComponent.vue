@@ -4,8 +4,8 @@
       <div class="d-flex justify-content-between align-items-center">
         <router-link to="/" class="text-light fw-bold">Garimpei</router-link>
       </div>
-      <div v-if="user.name" class="d-flex align-items-center">
-        <span class="text-light fw-bold me-3">Olá, {{ user.name }}!</span>
+      <div v-if="user.username" class="d-flex align-items-center">
+        <span class="text-light fw-bold me-3">Olá, {{ user.username }}!</span>
         <div class="menu-icon" @click="toggleSideMenu">
           <i class="fas fa-bars text-light"></i>
         </div>
@@ -74,18 +74,20 @@
 </template>
 
 <script lang="ts">
+// TODO: corrigir -o v-if do template para verificar token
 import { defineComponent, reactive, ref, computed } from 'vue';
 import { useRoute,useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
+import { useAuthStore } from '@/store/auth';
 import { useSearchStore } from '@/store/search';  
 import { useCartStore } from '@/store/cart';
 
 export default defineComponent({
   name: 'NavBar',
   setup() {
-    const user = useUserStore();
     const searchStore = useSearchStore();
-    const cartStore = useCartStore()
+    const authStore = useAuthStore();
+    const cartStore = useCartStore();
+    const user = authStore.user;
     const router = useRouter();
     const route = useRoute();
     const sideMenuOpen = ref(false);
@@ -136,6 +138,7 @@ export default defineComponent({
       router.push('/');
     };
 
+    // TODO: botar tudo em ingles
     return { 
       user, 
       categorias, 

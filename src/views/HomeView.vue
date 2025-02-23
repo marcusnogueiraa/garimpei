@@ -62,7 +62,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
+import { useAuthStore } from '@/store/auth';
 import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
 import ProductCard from '@/components/card/productCard.vue';
@@ -71,7 +71,8 @@ export default defineComponent({
   name: 'HomePage',
   setup() {
     const router = useRouter();
-    const userStore = useUserStore();
+    const authStore = useAuthStore();
+    const user = authStore.user;
     const produtosSection = ref<HTMLElement | null>(null);
 
     const produtos = ref([
@@ -106,9 +107,9 @@ export default defineComponent({
       }
     };
 
-
+    // TODO: verificar o token dps
     const handleSellClick = () => {
-      if (userStore.name) {
+      if (user.id) {
         router.push('/sell-product'); 
       } else {
         router.push('/login');

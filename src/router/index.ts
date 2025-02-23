@@ -10,6 +10,7 @@ import FavoritesView from '@/views/favoritesView.vue'
 import SellView from '@/views/SellView.vue'
 import MyProductsView from '@/views/MyProductsView.vue'
 import EditProductView from '@/views/EditProductView.vue'
+import StoreDashboardView from '@/views/StoreDashboardView.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -62,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/edit-product',
     name: 'edit-product',
     component: EditProductView
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: StoreDashboardView
   },
 ]
 
