@@ -48,6 +48,7 @@
   
   .icon-link {
     color: white;
+    text-decoration: none;
     font-size: 20px;
     transition: 0.3s;
   }

@@ -82,7 +82,7 @@
         categoria: [],
         imagem1: '',
         imagem2: '',
-        seller: 'Meu Loja'
+        seller: 2
       });
 
       const categoriaInput = ref('');
@@ -95,7 +95,7 @@
         imagem1: "https://via.placeholder.com/150",
         imagem2: "https://via.placeholder.com/150/cccccc",
         categoria: ["Tênis", "Esportivo"],
-        seller: "Meu Loja",
+        seller: 1,
         descricao: "Tênis confortável para prática esportiva.",
       };
 

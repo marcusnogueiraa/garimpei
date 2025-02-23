@@ -21,103 +21,147 @@
 
     <section class="container my-5 animate-spawn" ref="produtosSection">
       <h4 class="fw-bold">Últimas Novidades</h4>
+      <div v-if="loading" class="text-center my-4">
+        <span class="spinner-border text-success"></span>
+        <p>Carregando produtos...</p>
+      </div>
+      <div v-else-if="produtos.length === 0" class="text-center">
+        <p class="text-muted">Nenhum produto disponível no momento.</p>
+      </div>
       <div class="row mt-4">
         <ProductCard 
           v-for="(item, index) in produtos" 
+          :seller="item.seller" 
           :key="index" 
           :id="item.id"
-          :nome="item.nome" 
-          :seller="item.seller" 
-          :preco="item.preco" 
-          :imagem1="item.imagem1"
-          :categoria="item.categoria"
-          :descricao="item.descricao"
-          class="col-md-3 mt-2"
-        />
-      </div>
-    </section>
-
-    <section class="container my-5 animate-spawn">
-      <h4 class="fw-bold">Vestidos</h4>
-      <div class="row mt-4">
-        <ProductCard 
-          v-for="(item, index) in vestidos" 
-          :key="index" 
-          :id="item.id"
-          :nome="item.nome" 
-          :seller="item.seller" 
-          :preco="item.preco" 
-          :imagem1="item.imagem1"
-          :categoria="item.categoria"
-          :descricao="item.descricao"
+          :nome="item.name" 
+          :preco="item.price" 
+          :imagem1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
+          :imagem2="item.image2?.url ? `http://localhost:1337${item.image2.url}` : ''"
+          :categoria="item.tags"
+          :descricao="item.description"
           class="col-md-3 mt-2"
         />
       </div>
     </section>
 
     <FooterComponent />
+
+    <!-- Modal para aceitar os termos -->
+    <div v-if="showTermsModal" class="modal-backdrop">
+      <div class="modal-content">
+        <h3>Termos de Uso para Vendedores</h3>
+        <p>
+          Para vender produtos em nossa plataforma, você deve concordar com nossos termos de uso.
+          Isso inclui respeitar as políticas de produtos permitidos e oferecer suporte adequado aos compradores.
+        </p>
+        <p>Você concorda em se tornar um vendedor e seguir essas regras?</p>
+        <div class="d-flex gap-3">
+          <button class="btn btn-success" @click="acceptTerms">Aceitar e Tornar-se Vendedor</button>
+          <button class="btn btn-secondary" @click="showTermsModal = false">Cancelar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/store/auth';
-import HeaderComponent from '@/components/header/headerComponent.vue';
-import FooterComponent from '@/components/footer/footerComponent.vue';
-import ProductCard from '@/components/card/productCard.vue';
-import { useAuthGuard } from '@/composables/useAuthGuard'; 
+import { defineComponent, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/store/auth";
+import HeaderComponent from "@/components/header/headerComponent.vue";
+import FooterComponent from "@/components/footer/footerComponent.vue";
+import ProductCard from "@/components/card/productCard.vue";
+import { useAuthGuard } from "@/composables/useAuthGuard"; 
+import { useProductStore } from "@/store/products";
+import { useAuth } from "@/store/user";
+import api from "@/api/axios"; 
 
 export default defineComponent({
-  name: 'HomePage',
+  name: "HomePage",
   setup() {
     const router = useRouter();
     const authStore = useAuthStore();
-    const user = authStore.user;
     const produtosSection = ref<HTMLElement | null>(null);
-
-    const produtos = ref([
-      { 
-        id: 'vestido-vintage-floral',
-        nome: 'Vestido Vintage Floral', 
-        seller: 'Maumau', 
-        preco: 55.00,
-        imagem1: 'https://m.media-amazon.com/images/I/51WYOCCy3sL._AC_.jpg',
-        categoria: ['Brechó'], 
-        descricao: 'Um vestido vintage floral elegante e confortável.'
-      },
-      { 
-        id: 'blazer-elegante',
-        nome: 'Blazer Elegante', 
-        seller: 'Brechó Chic', 
-        preco: 120.00,
-        imagem1: 'https://img.ltwebstatic.com/images3_pi/2024/06/05/81/1717564315d787c6d841223e0f8717807f9e164fc1_thumbnail_405x.webp',
-        categoria: ['Casual'], 
-        descricao: 'Blazer elegante para um look sofisticado.'
-      }
-    ]);
-
-    const vestidos = ref(produtos.value.filter(item => item.categoria.includes('Brechó')));
-
+    const produtos = ref<any[]>([]);
+    const loading = ref(true);
+    const showTermsModal = ref(false); // Estado do modal
+    const { userRole, fetchUserRole } = useAuth();
+    
     const scrollToProducts = () => {
       if (produtosSection.value) {
-        const navbarHeight = document.querySelector('.sticky-nav')?.clientHeight || 0; 
+        const navbarHeight = document.querySelector(".sticky-nav")?.clientHeight || 0; 
         const offset = produtosSection.value.getBoundingClientRect().top + window.scrollY - navbarHeight - 20; 
-
-        window.scrollTo({ top: offset, behavior: 'smooth' });
+        window.scrollTo({ top: offset, behavior: "smooth" });
       }
     };
 
-    // TODO: verificar o token dps
-  const { requireLogin } = useAuthGuard();
-
-  const handleSellClick = () => {
-    requireLogin(() => {
-      router.push('/sell-product');
+    const productStore = useProductStore();
+    onMounted(async () => {
+      loading.value = true;
+      await productStore.fetchProducts(); 
+      produtos.value = productStore.products;
+      console.log("Produtos carregados:", produtos.value);
+      loading.value = false;
     });
-  };
 
-    return { produtos, vestidos, scrollToProducts, handleSellClick, produtosSection };
+      const { requireLogin } = useAuthGuard();
+
+      const handleSellClick = () => {
+          requireLogin(async () => { 
+            await fetchUserRole(); 
+
+            if (userRole.value === "seller") {
+              router.push("/sell-product");
+            } else {
+              showTermsModal.value = true;
+            }
+          });
+        };
+
+
+    const acceptTerms = async () => {
+      try {
+        const user = authStore.getUser(); 
+        if (!user) {
+          alert("Você precisa estar logado para se tornar vendedor.");
+          return;
+        }
+
+        const userId = user.id; // ID do usuário logado
+        const newRoleId = 3; // ID da role "Seller"
+
+        const response = await api.put(
+          `/users/${userId}`,  // Atualiza o usuário logado
+          { role: newRoleId }, // Define a nova role
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        );
+
+        if (response.status === 200) {
+          userRole.value = "Seller";
+          showTermsModal.value = false;
+          router.push("/sell-product");
+        } else {
+          alert("Erro ao atualizar sua conta para vendedor.");
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar role do usuário:", error);
+        alert("Erro ao atualizar sua conta para vendedor. Tente novamente.");
+      }
+    };
+
+
+    onMounted(fetchUserRole);
+
+    return {
+      produtos,
+      loading,
+      scrollToProducts,
+      handleSellClick,
+      showTermsModal,
+      acceptTerms,
+      produtosSection
+    };
   },
   components: {
     HeaderComponent,
@@ -129,7 +173,7 @@ export default defineComponent({
 
 <style scoped>
 .mural {
-  background: url('@/assets/mural.avif') no-repeat center center;
+  background: url("@/assets/mural.avif") no-repeat center center;
   background-size: cover;
   height: 600px;  
   display: flex;
@@ -164,14 +208,48 @@ export default defineComponent({
   padding: 10px 20px; 
 }
 
-.animate-spawn{
+.animate-spawn {
   animation: spawn .2s forwards;
 }
 
 @keyframes spawn {
-    from{
+    from {
       opacity: 0;
       transform: translateY(-8px);
     }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  text-align: center;
+}
+
+.modal-content h3 {
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.modal-content .btn {
+  width: 100%;
 }
 </style>

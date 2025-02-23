@@ -5,10 +5,9 @@ export interface Produto {
   imagem1: string;
   imagem2?: string;
   categoria: string[];
-  seller: string;
-  descricao: string
+  seller: number; 
+  descricao: string;
 }
-
 export interface Coupon{
   code: string;
   whoUsed: number[]

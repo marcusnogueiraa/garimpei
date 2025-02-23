@@ -79,7 +79,7 @@
           imagem1: "https://via.placeholder.com/100",
           imagem2: "https://via.placeholder.com/100/cccccc",
           categoria: ["Tênis", "Esportivo"],
-          seller: "Meu Loja",
+          seller: 2,
           descricao: "Tênis confortável para prática esportiva.",
         },
         {
@@ -89,7 +89,7 @@
           imagem1: "https://via.placeholder.com/100",
           imagem2: "",
           categoria: ["Bolsas"],
-          seller: "Meu Loja",
+          seller: 2,
           descricao: "Bolsa moderna e espaçosa.",
         }
       ];
