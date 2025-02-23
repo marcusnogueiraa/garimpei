@@ -1,5 +1,5 @@
 <script setup>
-import sellerHeaderComponent from '@/components/header/sellerHeaderComponent.vue'
+import sellerHeaderComponent from "@/components/header/sellerHeaderComponent.vue"
 import { ref, onMounted } from 'vue'
 
 // Estados locais
@@ -65,7 +65,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <sellerHeaderComponent></sellerHeaderComponent>
+  <sellerHeaderComponent/>
   <div class="container mt-4">
     <h2>📦 Gerenciar Produtos</h2>
 
