@@ -65,24 +65,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useProductStore } from '@/store/products';
-import HeaderComponent from '@/components/header/headerComponent.vue';
-import FooterComponent from '@/components/footer/footerComponent.vue';
-import { ProductCategory } from '@/types/interfaces';
+import { defineComponent, ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import HeaderComponent from "@/components/header/headerComponent.vue";
+import FooterComponent from "@/components/footer/footerComponent.vue";
+import { ProductCategory } from "@/types/interfaces";
+import api from "@/api/axios";
 
 export default defineComponent({
-  name: 'SellProduct',
+  name: "SellProduct",
   components: { HeaderComponent, FooterComponent },
   setup() {
-    const productStore = useProductStore();
+    const router = useRouter();
 
     const produto = ref({
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       price: 0,
       quantity: 0,
-      tags: '' as ProductCategory,
+      tags: "" as ProductCategory,
       wasSold: false,
       image1: null as { url: string } | null,
       image2: null as { url: string } | null,
@@ -92,15 +93,15 @@ export default defineComponent({
 
     const formValido = computed(() => {
       return (
-        produto.value.name.trim() !== '' &&
-        produto.value.description.trim() !== '' &&
+        produto.value.name.trim() !== "" &&
+        produto.value.description.trim() !== "" &&
         produto.value.price > 0 &&
         produto.value.quantity >= 0 &&
-        produto.value.tags !== undefined 
+        produto.value.tags !== undefined
       );
     });
 
-    const handleImageUpload = (event: Event, key: 'image1' | 'image2') => {
+    const handleImageUpload = (event: Event, key: "image1" | "image2") => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
         const reader = new FileReader();
@@ -113,23 +114,59 @@ export default defineComponent({
       }
     };
 
-    const submitForm = async () => {
-      if (!formValido.value) {
-        alert('Preencha todos os campos corretamente antes de submeter.');
-        return;
-      }
-
+    const createProduct = async () => {
       try {
-        await productStore.createProduct(produto.value);
-        alert('Produto cadastrado com sucesso!');
+        const formData = new FormData();
+
+        formData.append("name", produto.value.name);
+        formData.append("description", produto.value.description);
+        formData.append("price", produto.value.price.toString());
+        formData.append("quantity", produto.value.quantity.toString());
+        formData.append("tags", produto.value.tags);
+        formData.append("wasSold", produto.value.wasSold.toString());
+
+        if (produto.value.image1 && produto.value.image1.url) {
+          const file = await urlToFile(produto.value.image1.url, "image1.jpg");
+          formData.append("files.image1", file);
+        }
+
+        if (produto.value.image2 && produto.value.image2.url) {
+          const file = await urlToFile(produto.value.image2.url, "image2.jpg");
+          formData.append("files.image2", file);
+        }
+
+        const response = await api.post("/products", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        console.log(response);
+        alert("Produto cadastrado com sucesso!");
+        router.push("/manage-products");
       } catch (error) {
-        console.error('Erro ao criar produto:', error);
-        alert('Erro ao cadastrar produto.');
+        console.error("Erro ao criar produto:", error);
+        alert("Erro ao cadastrar produto.");
       }
     };
 
+    const urlToFile = async (url: string, filename: string): Promise<File> => {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return new File([blob], filename, { type: blob.type });
+    };
+
+    const submitForm = async () => {
+      if (!formValido.value) {
+        alert("Preencha todos os campos corretamente antes de submeter.");
+        return;
+      }
+      await createProduct();
+    };
+
     return { produto, productCategories, formValido, handleImageUpload, submitForm };
-  }
+  },
 });
 </script>
 
@@ -177,7 +214,7 @@ textarea {
 }
 
 .animate-spawn {
-  animation: spawn .2s forwards;
+  animation: spawn 0.2s forwards;
 }
 
 @keyframes spawn {

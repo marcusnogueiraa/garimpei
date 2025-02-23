@@ -10,7 +10,7 @@
         <div class="star position-absolute" @click.stop="toggleFavorite">
           <i :class="isFavorite ? 'fa fa-star' : 'far fa-star'"></i>
         </div>
-        <img :src="productImage" :alt="name" class="product-image object-fit-cover" />
+        <img :src="productImage" :alt="name" class="product-image " />
         <h5 class="card-title mt-3">{{ name }}</h5>
         <p class="fw-bold">{{ formatPrice(price) }}</p>
       </div>
@@ -117,7 +117,9 @@ const formatPrice = (price: number): string => {
 
 .product-image {
   width: 100%;
-  height: 300px;
+  height: auto;
+  max-height: 250px;
+  object-fit: contain;
   background-color: #fff; 
   border-radius: 5px;
 }

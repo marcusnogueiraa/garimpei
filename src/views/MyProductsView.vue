@@ -1,6 +1,8 @@
 <template>
   <div class="manage-products">
-    <HeaderComponent />
+    <div>
+      <HeaderComponent />
+    </div>
 
     <section class="container h-100 my-5">
       <h2 class="fw-bold">Meus Produtos</h2>

@@ -26,7 +26,7 @@
               @mouseleave="hover = false"
             />
           </div>
-          <div class="col-md-8">  
+          <div class="col-md-8 text-start">  
             <h2 class="fw-bold">{{ produto?.name }}</h2>
             <h4 class="text-success">Preço: {{ formatPrice(precoComDesconto) }}</h4>
             <p v-if="desconto > 0" class="text-muted">
