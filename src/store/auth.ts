@@ -3,11 +3,20 @@ import { ref } from 'vue'
 import api from '@/api/axios'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<any>(null);
+  const user = ref<any>(getUser()); 
   const token = ref<string>(localStorage.getItem('token') ?? ''); 
 
   function getUser() {
-    return JSON.parse(localStorage.getItem('user') || '');
+    const user = localStorage.getItem('user'); 
+    if (user && user.trim() !== '') { 
+      try {
+        return JSON.parse(user); 
+      } catch (error) {
+        console.error('Erro ao fazer parse do usuário:', error);
+        return null; 
+      }
+    }
+    return null; 
   }
 
   async function register(name: string, email: string, password: string) {
@@ -27,11 +36,10 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = response.data.jwt;
     user.value = response.data.user;
     localStorage.setItem('token', token.value);
-  
+    localStorage.setItem('user', JSON.stringify(user.value)); 
+    
     return { success: true };
   }
-  
-  
   
   async function login(email: string, password: string) {
     const response = await api.post('/auth/local', {
@@ -49,6 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = response.data.jwt;
     user.value = response.data.user;
     localStorage.setItem('token', token.value);
+    localStorage.setItem('user', JSON.stringify(user.value)); 
 
     console.log("Login bem-sucedido:", user.value);
 
@@ -59,7 +68,8 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = '';
     user.value = null;
     localStorage.removeItem('token');
+    localStorage.removeItem('user'); 
   }
 
-  return { user, token, register, login, logout, getUser};
+  return { user, token, register, login, logout, getUser };
 });
