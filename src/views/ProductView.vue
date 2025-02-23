@@ -2,7 +2,7 @@
   <div class="product-page">
     <HeaderComponent />
 
-    <section class="container my-5">
+    <section class="container my-5 animate-spawn">
       <div class="p-4">
         <div class="row">
           <div class="col-md-4 d-flex justify-content-center">
@@ -79,5 +79,16 @@ export default defineComponent({
   max-width: 100%;
   height: auto;
   transition: opacity 0.3s ease-in-out;
+}
+
+.animate-spawn{
+  animation: spawn .2s forwards;
+}
+
+@keyframes spawn {
+    from{
+      opacity: 0;
+      transform: translateY(-8px);
+    }
 }
 </style>

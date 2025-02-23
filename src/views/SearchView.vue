@@ -1,7 +1,7 @@
 <template>
     <div class="vh-100 d-flex flex-column position-relative">
         <HeaderComponent />
-        <main class="h-100 p-4">    
+        <main class="h-100 p-4 animate-spawn">    
             <div class="d-flex mt-4">
                 <aside class="filters">
                     <h4>Filtros</h4>
@@ -130,4 +130,15 @@ export default defineComponent({
 .search-results {
     flex-grow: 1;
 }
+
+.animate-spawn{
+    animation: spawn .2s forwards;
+  }
+  
+  @keyframes spawn {
+      from{
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+  }
 </style>

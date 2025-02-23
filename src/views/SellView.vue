@@ -1,7 +1,7 @@
 <template>
     <div class="vh-100 d-flex flex-column position-relative">
       <HeaderComponent />
-      <main class="container my-5">
+      <main class="container my-5 animate-spawn">
         <h2 class="fw-bold text-center">Vender Produto</h2>
         <p></p>
         <div class="d-flex justify-content-between gap-4">
@@ -170,6 +170,17 @@
     .only-desktop {
       display: none;
     }
+  }
+
+  .animate-spawn{
+    animation: spawn .2s forwards;
+  }
+  
+  @keyframes spawn {
+      from{
+        opacity: 0;
+        transform: translateY(-8px);
+      }
   }
   </style>
   

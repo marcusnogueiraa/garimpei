@@ -3,7 +3,7 @@
     <HeaderComponent />
 
     <main class="bg-light">
-      <div class="mural">
+      <div class="mural animate-spawn">
         <div class="bg-black-50 d-flex justify-content-center align-items-center">
           <div class="mural-content">
             <h1 class="fw-bold text-light">Moda Sustentável ao seu Alcance</h1>
@@ -19,7 +19,7 @@
       </div>
     </main>
 
-    <section class="container my-5" ref="produtosSection">
+    <section class="container my-5 animate-spawn" ref="produtosSection">
       <h4 class="fw-bold">Últimas Novidades</h4>
       <div class="row mt-4">
         <ProductCard 
@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <section class="container my-5">
+    <section class="container my-5 animate-spawn">
       <h4 class="fw-bold">Vestidos</h4>
       <div class="row mt-4">
         <ProductCard 
@@ -160,5 +160,16 @@ export default defineComponent({
 .mural .btn {
   font-size: 1rem; 
   padding: 10px 20px; 
+}
+
+.animate-spawn{
+  animation: spawn .2s forwards;
+}
+
+@keyframes spawn {
+    from{
+      opacity: 0;
+      transform: translateY(-8px);
+    }
 }
 </style>

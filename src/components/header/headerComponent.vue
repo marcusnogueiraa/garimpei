@@ -30,8 +30,8 @@
           <a href="#" class="nav-link text-light">{{ categoria.nome }}</a>
           <transition name="fade">
             <ul v-if="categoria.ativo" class="dropdown">
-              <li v-for="(item, i) in categoria.tipos" :key="i">
-                <a href="#" class="dropdown-item" @click="buscarPorItem(item)">{{ item }}</a>
+              <li v-for="(item, i) in categoria.tipos" :key="i" @click="buscarPorItem(item)">
+                <a href="#" class="dropdown-item" >{{ item }}</a>
               </li>
             </ul>
           </transition>
@@ -302,6 +302,8 @@ export default defineComponent({
   cursor: pointer;
   color: white;
   text-decoration: none;
+
+  
 }
 
 .nav-link:hover {
@@ -333,6 +335,8 @@ export default defineComponent({
 .dropdown li {
   padding: 10px 20px;
   transition: background 0.3s ease-in-out;
+
+  cursor: pointer;
 }
 
 .dropdown-item {
