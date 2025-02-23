@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../store/auth';
 import { useRouter } from 'vue-router';
 import InputLoginField from '@/components/InputLoginField.vue';
 
