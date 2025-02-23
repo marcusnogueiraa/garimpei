@@ -98,7 +98,7 @@ const fetchSales = async () => {
 };
 
 const createCoupon = async () => {
-  if (!newCoupon.value.code || !newCoupon.value.discount || !newCoupon.value.expiryDate) {
+  if (!newCoupon.value.code || !newCoupon.value.discount) {
     alert("Preencha todos os campos!");
     return;
   }
@@ -109,33 +109,39 @@ const createCoupon = async () => {
     return;
   }
 
+  console.log("Chamando API para criar cupom...");
+
   try {
     const response = await api.post(
-      "/coupons",
+      "/coupons", 
       {
         data: {
           code: newCoupon.value.code,
           discount: newCoupon.value.discount,
-          expiryDate: newCoupon.value.expiryDate,
-          seller: user?.id,   
-          whoUsedId: [], 
-        },
-      },
+          seller: 1,  
+          expiryDate: "2025-12-31",
+        }
+      }, 
       {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+          "Content-Type": "application/json",
+        }
       }
     );
 
+    console.log("Resposta da API:", response.data);
     coupons.value.push(response.data.data);
-    newCoupon.value = { code: "", discount: "", expiryDate: "" };
+
+    newCoupon.value = { code: "", discount: "" };
+
     alert("Cupom criado com sucesso!");
   } catch (error) {
-    console.error("Erro ao criar cupom:", error);
-    alert("Erro ao criar o cupom. Verifique suas permissões e tente novamente.");
+    console.error("Erro ao criar cupom:", error.response?.data || error);
+    alert("Erro ao criar o cupom. Verifique os dados e tente novamente.");
   }
 };
+
 
 const deleteCoupon = async (id) => {
   const token = localStorage.getItem("token");
