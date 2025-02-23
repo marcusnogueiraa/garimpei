@@ -42,11 +42,9 @@ O objetivo é a ampliação do alcance de vendas, fortalecimento financeiro e a 
 Liste as principais entidades do sistema.
 
 > Produto </br>
-> Loja </br>
 > Usuário </br>
 > Cupom </br>
 > Venda </br>
-> Avaliação </br>
 
 :warning::warning::warning: As informações a seguir devem ser enviadas juntamente com a versão final do projeto. :warning::warning::warning:
 
@@ -69,9 +67,10 @@ Strapi
 
 | Entidade| Criação | Leitura | Atualização | Remoção |
 | --- | --- | --- | --- | --- |
-| Entidade 1 | X |  X  |  | X |
-| Entidade 2 | X |    |  X | X |
-| Entidade 3 | X |    |  |  |
+| Produto | X |  X  | X | X |
+| Usuario | X |  X  |  |  |
+| Cupom | X |  X  | X | X |
+| Venda | X |  X  |  |  |
 
 > Lembre-se que é necessário implementar o CRUD de pelo menos duas entidades.
 
@@ -81,5 +80,13 @@ Strapi
 
 | Método HTTP | URL |
 | --- | --- |
-| GET | api/entidade1/|
-| POST | api/entidade2 |
+| POST | api//auth/local/register |
+| POST | api/auth/local|
+| POST | api/auth/local|
+| GET | api/coupons |
+| GET | api/sales |
+| POST | api/sales |
+| GET | api/products |
+| POST | api/products |
+| PUT | api/products |
+| DELETE | api/products |
