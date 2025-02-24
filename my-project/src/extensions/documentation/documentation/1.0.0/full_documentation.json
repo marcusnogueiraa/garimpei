@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2025-02-24T11:09:53.911Z"
+    "x-generation-date": "2025-02-24T16:29:04.064Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -289,7 +289,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/coupons/{id}": {
       "put": {
         "responses": {
           "200": {
@@ -356,8 +358,19 @@
         "tags": [
           "Coupon"
         ],
-        "parameters": [],
-        "operationId": "put/coupons",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "deprecated": false,
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "put/coupons/{id}",
         "requestBody": {
           "required": true,
           "content": {
@@ -368,9 +381,7 @@
             }
           }
         }
-      }
-    },
-    "/coupons/{id}": {
+      },
       "delete": {
         "responses": {
           "200": {

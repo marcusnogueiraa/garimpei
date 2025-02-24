@@ -20,7 +20,7 @@ module.exports = {
     },
     {
       method: "PUT",
-      path: "/coupons",
+      path: "/coupons/:id",
       handler: "coupon.update",
       config: {
         auth: false,

@@ -19,8 +19,6 @@
             :name="item.name" 
             :description="item.description"
             :price="item.price" 
-            :quantity="item.quantity"
-            :slug="item.slug"
             :wasSold="item.wasSold"
             :tags="item.tags"
             :createdAt="item.createdAt"

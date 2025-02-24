@@ -83,6 +83,7 @@ import sellerHeaderComponent from "@/components/header/sellerHeaderComponent.vue
 import { ref, onMounted } from "vue";
 import api from "@/api/axios";
 import { useAuthStore } from "@/store/auth";
+import { useCouponStore } from "@/store/coupon";
 
 const coupons = ref([]);
 const sales = ref([]);
@@ -129,9 +130,12 @@ const fetchSales = async () => {
   }
 
   try {
-    const response = await api.get(`/sales?filters[buyerUsername][$eq]=${user.username}`, {
+    const response = await api.get(`/sales?filters[sellerUsername][$eq]=${user.username}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+
+    console.log(response);
 
     sales.value = response.data.data.map(sale => ({
       id: sale.id,
@@ -164,7 +168,7 @@ const createCoupon = async () => {
         data: {
           code: newCoupon.value.code,
           discount: newCoupon.value.discount,
-          seller: user.username,
+          sellerUsername: user.username,
           expiryDate: newCoupon.value.expiryDate,
         }
       },
@@ -223,42 +227,34 @@ const closeEditModal = () => {
   showEditModal.value = false;
 };
 
+const couponStore = useCouponStore();
+
 const updateCoupon = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Você precisa estar logado para atualizar um cupom.");
-    return;
-  }
-  try {
-    const response = await api.put(
-      `/coupons/${editCoupon.value.id}`,
-      {
-        data: {
-          id: editCoupon.value.id,
-          code: editCoupon.value.code,
-          discount: editCoupon.value.discount,
-          expiryDate: editCoupon.value.expiryDate
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
-      }
-    );
-    
+  if (!editCoupon.value.id) return;
+
+  console.log("cupom do id mudado", editCoupon.value.id)
+
+  const updatedData = {
+    id: editCoupon.value.documentId,
+    code: editCoupon.value.code,
+    discount: editCoupon.value.discount,
+    expiryDate: editCoupon.value.expiryDate
+  };
+
+  const result = await couponStore.updateCoupon(updatedData);
+
+  if (result.success) {
     const index = coupons.value.findIndex(c => c.id === editCoupon.value.id);
     if (index !== -1) {
-      coupons.value[index] = response.data.data;
+      coupons.value[index] = result.data;
     }
     alert("Cupom atualizado com sucesso!");
     closeEditModal();
-  } catch (error) {
-    console.error("Erro ao atualizar cupom:", error);
-    alert("Erro ao atualizar cupom. Tente novamente.");
+  } else {
+    alert(result.message);
   }
 };
+
 
 onMounted(() => {
   fetchCoupons();

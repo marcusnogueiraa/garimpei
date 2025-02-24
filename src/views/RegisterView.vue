@@ -38,7 +38,7 @@ const handleRegister = async () => {
       <p class="text-center text-muted">Cadastre-se para começar a comprar e vender</p>
 
       <form class="register-form-container" @submit.prevent="handleRegister">
-        <InputLoginField label="Nome completo" id="name" type="text" placeholder="João Silva" v-model="name" />
+        <InputLoginField label="Usuário" id="name" type="text" placeholder="joaovendas" v-model="name" />
         <InputLoginField label="Email" id="email" type="email" placeholder="seu@email.com" v-model="email" />
         <InputLoginField label="Senha" id="password" type="password" placeholder="********" v-model="password" />
         <InputLoginField label="Confirme sua senha" id="confirm-password" type="password" placeholder="********" v-model="confirmPassword" />
