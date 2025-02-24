@@ -44,6 +44,7 @@
       :createdAt="item.createdAt"
       :updatedAt="item.updatedAt"
       :publishedAt="item.publishedAt"
+      :sellerId="item.seller.id"
       :image1="item.image1?.url ? `http://localhost:1337${item.image1.url}` : ''"
       class="col-md-3 mt-2"
     />
@@ -92,7 +93,7 @@ export default defineComponent({
     const produtosSection = ref<HTMLElement | null>(null);
     const produtos = ref<any[]>([]);
     const loading = ref(true);
-    const showTermsModal = ref(false); // Estado do modal
+    const showTermsModal = ref(false); 
     const { userRole, fetchUserRole } = useAuth();
     
     const scrollToProducts = () => {

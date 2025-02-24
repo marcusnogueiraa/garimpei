@@ -60,7 +60,7 @@ const routes: Array<RouteRecordRaw> = [
     component: MyProductsView
   },
   {
-    path: '/edit-product',
+    path: '/edit-product/:id',
     name: 'edit-product',
     component: EditProductView
   },

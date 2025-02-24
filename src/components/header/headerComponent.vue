@@ -92,7 +92,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const sideMenuOpen = ref(false);
-    const userRole = ref<string | null>(null); // Guardar a role do usuário
+    const userRole = ref<string | null>(null); 
 
     const { requireLogin } = useAuthGuard();
     
@@ -144,7 +144,6 @@ export default defineComponent({
       });
     };
 
-    /** 🔥 Obtém a role do usuário logado */
     const fetchUserRole = async () => {
       try {
         const response = await api.get("/users/me?populate=role", {
@@ -242,6 +241,17 @@ export default defineComponent({
   flex-direction: column;
   transition: transform 0.3s ease-in-out;
   z-index: 1050;
+
+  animation: animate-left .3s forwards;
+}
+
+@keyframes animate-left {
+  from{
+    transform: translateX(100%);
+  }
+  to{
+    transform: translateX(0);
+  }
 }
 
 .side-menu-content {
@@ -394,7 +404,7 @@ export default defineComponent({
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(20px);
 }
 
 .fade-enter-to,

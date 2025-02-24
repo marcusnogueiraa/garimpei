@@ -19,14 +19,13 @@
             :name="item.name" 
             :description="item.description"
             :price="item.price" 
-            :quantity="item.quantity"
-            :slug="item.slug"
             :wasSold="item.wasSold"
             :tags="item.tags"
             :createdAt="item.createdAt"
             :updatedAt="item.updatedAt"
             :publishedAt="item.publishedAt"
             :image1="formatImage(item.image1)"
+            :sellerId="item.sellerId"
             class="col-md-3 mt-2"
           />
         </div>

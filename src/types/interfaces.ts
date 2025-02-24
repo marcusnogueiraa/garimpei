@@ -7,7 +7,7 @@
   }
 
   export interface Produto {
-    id: number;
+    id: number; 
     documentId: string;
     name: string;
     description: string;
@@ -20,6 +20,7 @@
     publishedAt: string;
     image1: string
     image2?: string
+    sellerId: number
   }
 
 

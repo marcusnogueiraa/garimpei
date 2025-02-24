@@ -50,19 +50,24 @@ export const useCouponStore = defineStore("coupon", () => {
     }
   };
 
+  // for later
   const useCoupon = async (couponCode: string, userId: number) => {
     try {
       const response = await api.get(
         `/coupons?filters[code][$eq]=${couponCode}`
       );
+      console.log("API response for useCoupon:", response);
       console.log("API response for useCoupon:", response.data);
 
       const couponData = response.data.data[0];
+      console.log("couponData", response.data.data[0])
 
       if (!couponData) {
         console.error("Coupon not found.");
         return { success: false, message: "Coupon not found." };
       }
+
+      console.log("couponData", couponData)
 
       const couponId = couponData.id;
       const updatedWhoUsed = [...(couponData.whoUsedId || []), userId];
@@ -78,6 +83,40 @@ export const useCouponStore = defineStore("coupon", () => {
     }
   };
 
+  const updateCoupon = async (updatedData: { id: number; code: string; discount: number; expiryDate: string }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return { success: false, message: "Você precisa estar logado para atualizar um cupom." };
+      }
 
-  return { validateCoupon, useCoupon };
+      console.log("ID do cupom sendo atualizado:", updatedData.id);
+
+      const response = await api.put(
+        `/coupons/${updatedData.id}`,   
+        {
+          data: {
+            code: updatedData.code,
+            discount: updatedData.discount,
+            expiryDate: updatedData.expiryDate
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        }
+      );
+
+      console.log("Cupom atualizado com sucesso:", response.data);
+      return { success: true, data: response.data.data };
+    } catch (error) {
+      console.error("Erro ao atualizar cupom:", error);
+      return { success: false, message: "Erro ao atualizar o cupom." };
+    }
+};
+
+
+  return { validateCoupon, useCoupon, updateCoupon };
 });

@@ -11,6 +11,7 @@ export const useProductStore = defineStore('product', () => {
   async function fetchProducts() {
     loading.value = true;
     try {
+
       const response = await api.get('/products', {
         params: {
           populate: '*', 
@@ -23,8 +24,10 @@ export const useProductStore = defineStore('product', () => {
         error.value = "Erro ao buscar produtos.";
         return;
       }
+
   
       products.value = response.data.data;
+
       console.log("Produtos carregados:", products.value);
     } catch (err) {
       console.error('Erro ao buscar produtos:', err);
@@ -48,6 +51,21 @@ export const useProductStore = defineStore('product', () => {
   
       product.value = response.data.data[0]; 
       console.log("Produto carregado:", product.value);
+    } catch (err) {
+      console.error('Erro ao buscar produto:', err);
+      error.value = 'Erro ao buscar produto';
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function fetchProductByIdForEdit(id: string) {
+    loading.value = true;
+    try {
+      const response = await api.get(`/products/${id}?populate=*`);
+  
+      console.log("Produto carregado:", response.data.data);
+      product.value = response.data.data 
     } catch (err) {
       console.error('Erro ao buscar produto:', err);
       error.value = 'Erro ao buscar produto';
@@ -116,5 +134,6 @@ export const useProductStore = defineStore('product', () => {
     createProduct,
     updateProduct,
     deleteProduct,
+    fetchProductByIdForEdit
   };
 });
