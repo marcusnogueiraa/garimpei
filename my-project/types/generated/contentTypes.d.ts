@@ -396,7 +396,7 @@ export interface ApiCouponCoupon extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    seller: Schema.Attribute.Integer & Schema.Attribute.Required;
+    sellerUsername: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

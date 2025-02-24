@@ -21,10 +21,6 @@
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user"
     },
-    "seller": {
-      "type": "integer",
-      "required": true
-    },
     "discount": {
       "type": "float",
       "required": true
@@ -32,6 +28,9 @@
     "expiryDate": {
       "type": "date",
       "required": true
+    },
+    "sellerUsername": {
+      "type": "string"
     }
   }
 }

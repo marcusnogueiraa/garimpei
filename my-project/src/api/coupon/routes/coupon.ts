@@ -19,6 +19,14 @@ module.exports = {
       },
     },
     {
+      method: "PUT",
+      path: "/coupons",
+      handler: "coupon.update",
+      config: {
+        auth: false,
+      },
+    },
+    {
       method: "DELETE",
       path: "/coupons/:id",
       handler: "coupon.delete",

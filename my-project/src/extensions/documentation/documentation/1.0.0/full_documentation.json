@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2025-02-24T06:22:05.515Z"
+    "x-generation-date": "2025-02-24T11:09:53.911Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -279,6 +279,85 @@
         ],
         "parameters": [],
         "operationId": "post/coupons",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CouponRequest"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Coupon"
+        ],
+        "parameters": [],
+        "operationId": "put/coupons",
         "requestBody": {
           "required": true,
           "content": {
@@ -2847,7 +2926,6 @@
           "data": {
             "required": [
               "code",
-              "seller",
               "discount",
               "expiryDate"
             ],
@@ -2870,9 +2948,6 @@
                   "example": "string or id"
                 }
               },
-              "seller": {
-                "type": "integer"
-              },
               "discount": {
                 "type": "number",
                 "format": "float"
@@ -2880,6 +2955,9 @@
               "expiryDate": {
                 "type": "string",
                 "format": "date"
+              },
+              "sellerUsername": {
+                "type": "string"
               },
               "locale": {
                 "type": "string"
@@ -2941,7 +3019,6 @@
         "type": "object",
         "required": [
           "code",
-          "seller",
           "discount",
           "expiryDate"
         ],
@@ -4032,9 +4109,6 @@
               }
             }
           },
-          "seller": {
-            "type": "integer"
-          },
           "discount": {
             "type": "number",
             "format": "float"
@@ -4042,6 +4116,9 @@
           "expiryDate": {
             "type": "string",
             "format": "date"
+          },
+          "sellerUsername": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
@@ -4108,9 +4185,6 @@
                     }
                   }
                 },
-                "seller": {
-                  "type": "integer"
-                },
                 "discount": {
                   "type": "number",
                   "format": "float"
@@ -4118,6 +4192,9 @@
                 "expiryDate": {
                   "type": "string",
                   "format": "date"
+                },
+                "sellerUsername": {
+                  "type": "string"
                 },
                 "createdAt": {
                   "type": "string",

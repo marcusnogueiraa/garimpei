@@ -26,7 +26,7 @@
   export interface Coupon{
     code: string;
     whoUsed: number[]
-    seller: string;
+    sellerUsername: string;
     maxUse: number;
   }
 

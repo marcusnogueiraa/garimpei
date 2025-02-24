@@ -33,10 +33,6 @@
               <label class="form-label">Endereço</label>
               <input v-model.trim="form.endereco" type="text" class="form-control" required />
             </div>
-            <div class="mb-3">
-              <label class="form-label">CEP</label>
-              <input v-model.trim="form.cep" type="text" class="form-control" required />
-            </div>
 
             <h4 class="fw-bold mt-4">Pagamento</h4>
             <div class="mb-3">
@@ -82,7 +78,6 @@ export default defineComponent({
     const form = ref({
       nome: '',
       endereco: '',
-      cep: '',
       pagamento: 'pix'
     });
 
@@ -102,7 +97,7 @@ export default defineComponent({
     };
 
     const finalizarCompra = async () => {
-      if (!form.value.nome || !form.value.endereco || !form.value.cep) {
+      if (!form.value.nome || !form.value.endereco) {
         alert('Preencha todas as informações de entrega.');
         return;
       }

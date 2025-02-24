@@ -1,53 +1,52 @@
 <template>
   <div class="product-page">
-    <div>
-      <HeaderComponent />
-    </div>
-
-    <section class="container my-5 h-100 animate-spawn">
-      <div class="p-4">
+    <HeaderComponent />
+    <section class="container h-100 animate-spawn">
+      <div class="p-4 product-container">
         <div v-if="loading" class="text-center">
           <span class="spinner-border text-success"></span>
-          <p>Carregando produto...</p>
+          <p>Carregando Produto...</p>
         </div>
 
-
-        <div v-else-if="!produto" class="text-center">
+        <div v-else-if="!product" class="text-center">
           <p class="text-muted">Produto não encontrado.</p>
         </div>
 
         <div v-else class="row">
           <div class="col-md-4 d-flex justify-content-center">
             <img 
-              :src="`http://localhost:1337${produto.image1.url}`" 
-              :alt="produto?.name" 
+              :src="product.image1?.url ? `http://localhost:1337${product.image1.url}` : 'https://via.placeholder.com/200'"
+              :alt="product?.name || 'Product'" 
               class="img-fluid product-image"
               @mouseover="hover = true" 
               @mouseleave="hover = false"
             />
           </div>
           <div class="col-md-8 text-start">  
-            <h2 class="fw-bold">{{ produto?.name }}</h2>
-            <h4 class="text-success">Preço: {{ formatPrice(precoComDesconto) }}</h4>
-            <p v-if="desconto > 0" class="text-muted">
-              <s>Original: {{ formatPrice(produto?.price ?? 0) }}</s> ({{ desconto }}% OFF)
+            <h2 class="fw-bold">{{ product?.name }}</h2>
+            <h4 class="text-success">Preço: {{ formatPrice(discountedPrice) }}</h4>
+            <p v-if="discount > 0" class="text-muted">
+              <s>Original: {{ formatPrice(product?.price ?? 0) }}</s> ({{ discount }}% OFF)
             </p>
-            <p>{{ produto?.description }}</p>
+            <p>{{ product?.description }}</p>
 
-
-            <div class="cupom-container">
-              <input v-model="cupomDigitado" type="text" class="form-control" placeholder="Digite o cupom" />
-              <button class="btn btn-primary" @click="aplicarCupom">Aplicar</button>
+            <div class="coupon-container">
+              <input v-model="couponCode" type="text" class="form-control" placeholder="Enter coupon code" />
+              <button class="btn btn-primary" @click="applyCoupon">Aplicar</button>
             </div>
-            <p v-if="mensagemCupom" class="text">{{ mensagemCupom }}</p>
+            <p v-if="couponMessage" class="text">{{ couponMessage }}</p>
 
+            <button class="btn mt-3" 
+              :class="isInCart ? 'btn-danger' : 'btn-success'" 
+              @click="toggleCart">
+              {{ isInCart ? "Remover do Carrinho" : "Adicionar ao Carrinho" }}
+            </button>
 
-            <button class="btn btn-success mt-3" @click="adicionarAoCarrinho(produto)">Adicionar ao carrinho</button>
           </div>
         </div>
       </div>
     </section>
-
+    
     <FooterComponent />
   </div>
 </template>
@@ -71,87 +70,96 @@ export default defineComponent({
     const productStore = useProductStore();
     const authStore = useAuthStore();
     
-    const produto = ref<any | null>(null);
+    const product = ref<any | null>(null);
     const hover = ref(false);
-    const cupomDigitado = ref("");
-    const desconto = ref(0);
-    const mensagemCupom = ref("");
+    const couponCode = ref("");
+    const discount = ref(0);
+    const couponMessage = ref("");
     const loading = ref(true);
     const user = authStore.getUser();
 
-    console.log("Página carregada, verificando parâmetros...");
-    console.log("ID do produto na rota:", route.params.id);
-
-    const carregarProduto = async () => {
+    const loadProduct = async () => {
       const productId = Number(route.params.id); 
 
       if (isNaN(productId)) {
-        console.error("ID inválido na URL");
         loading.value = false;
         return;
       }
 
-      console.log("Buscando produto com ID:", productId);
-      
       await productStore.fetchProductById(productId);
-      
-      console.log("Produto retornado da store:", productStore.product);
 
       if (productStore.product) {
-        produto.value = productStore.product;
-        console.log("Produto carregado:", produto.value);
-      } else {
-        console.error("Produto não encontrado.");
+        product.value = productStore.product;
       }
 
       loading.value = false;
     };
 
-    onMounted(carregarProduto);
+    onMounted(loadProduct);
 
-    const aplicarCupom = () => {
+    const applyCoupon = async () => {
       if (!user) {
-        mensagemCupom.value = "Você precisa estar logado para usar um cupom.";
+        couponMessage.value = "Você precisa estar logado para usar um cupom.";
         return;
       }
 
-      const resultado = couponStore.validateCoupon(cupomDigitado.value, user.id);
-      if (resultado.valid) {
-        desconto.value = resultado.discount ?? 0; 
-        mensagemCupom.value = "Cupom aplicado com sucesso!";
-      } else {
-        mensagemCupom.value = resultado.message ?? '';
+      if (!product.value) {
+        couponMessage.value = "Produto não encontrado.";
+        return;
       }
+
+      const result = await couponStore.validateCoupon(
+        couponCode.value,
+        user.id,
+        product.value.seller.username
+      );
+
+      if (!result.valid) {
+        couponMessage.value = result.message || "";
+        return;
+      }
+
+      discount.value = result.discount ?? 0;
+      couponMessage.value = "Cupom aplicado com sucesso!";
     };
 
-    const precoComDesconto = computed(() => {
-      if (!produto.value) return 0;
-      return produto.value.price * ((100 - desconto.value) / 100);
+    const discountedPrice = computed(() => {
+      if (!product.value) return 0;
+      return product.value.price * ((100 - discount.value) / 100);
     });
 
-    const adicionarAoCarrinho = (produto: any) => {
-      if (produto) {
-        cartStore.addCartItem({ ...produto, price: precoComDesconto.value });
+    const isInCart = computed(() => {
+      return cartStore.cart.some(item => item.id === product.value?.id);
+    });
+
+    const toggleCart = () => {
+      if (!product.value) return;
+
+      if (isInCart.value) {
+        cartStore.removeCartItem(product.value.id);
+      } else {
+        cartStore.addCartItem({ ...product.value, price: discountedPrice.value });
       }
     };
 
     const formatPrice = (price: number): string => {
-      return price.toLocaleString("pt-BR", {
+      return price.toLocaleString("en-US", {
         style: "currency",
-        currency: "BRL",
+        currency: "USD",
       });
     };
 
     return {
-      produto,
+      product,
       loading,
-      adicionarAoCarrinho,
       hover,
-      cupomDigitado,
-      aplicarCupom,
-      mensagemCupom,
-      desconto,
-      precoComDesconto,
+      couponCode,
+      applyCoupon,
+      couponMessage,
+      discount,
+      discountedPrice,
+      isInCart,
+      toggleCart,
       formatPrice
     };
   },
@@ -159,24 +167,30 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.product-page{
-  min-height: 100dvh;
 
+.product-page {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  min-height: 100vh; 
+}
+
+.container {
+  flex-grow: 1;
+}
+
+.product-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .product-image {
   max-width: 100%;
   height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   transition: opacity 0.3s ease-in-out;
 }
 
-.cupom-container {
+.coupon-container {
   display: flex;
   gap: 10px;
   margin-top: 15px;
