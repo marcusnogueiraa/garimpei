@@ -12,6 +12,7 @@
         </div>
         <img :src="productImage" :alt="name" class="product-image " />
         <h5 class="card-title mt-3">{{ name }}</h5>
+        <h6 class="mt-3">{{ sellerUsername }} </h6>
         <p class="fw-bold">{{ formatPrice(price) }}</p>
       </div>
     </div>
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, computed } from 'vue';
+import { defineProps, ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCartStore } from '@/store/cart';
 import { useFavoriteStore } from '@/store/favorites';
@@ -33,6 +34,7 @@ const hover = ref(false);
 const router = useRouter();
 const cartStore = useCartStore();
 const favoriteStore = useFavoriteStore();
+const sellerUsername = ref<string>(''); // 
 
 const isInCart = computed(() => cartStore.cart.some(item => item.id === props.id));
 const isFavorite = computed(() => favoriteStore.favorites.some(item => item.id === props.id));
@@ -63,9 +65,7 @@ const toggleFavorite = () => {
   });
 };
 
-// Ajustando o caminho correto da imagem
 const productImage = computed(() => props.image1 || '');
-
 
 const formatPrice = (price: number): string => {
   return price.toLocaleString('pt-BR', {
@@ -74,26 +74,28 @@ const formatPrice = (price: number): string => {
   });
 };
 
-// async function fetchUserById(id: number) {
-//     try {
-//       const response = await api.get(`/users?filters[id][$eq]=${id}&populate=*`);
-  
-//       if (!response.data || !response.data.data || response.data.data.length === 0) {
-//         console.error("Erro: User não encontrado.", response);
-//         return;
-//       }
-      
-//       console.log(response.data.data)
-//       return  response.data.data.username
-//     } catch (err) {
-//       console.error('Erro ao buscar produto:', err);
-//     } 
-//   }
+
+async function fetchUserById(id: number) {
+  console.log("id", id)
+  try {
+    const response = await api.get(`/users?filters[id][$eq]=${id}&populate=*`);
+    
+    console.log(response.data)
+    sellerUsername.value = response.data[0].username;
+  } catch (err) {
+    console.error('Erro ao buscar usuário:', err);
+  }
+}
+
+onMounted(() => {
+  fetchUserById(props.sellerId);
+});
 </script>
 
 <style scoped>
 .product-card {
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .star {

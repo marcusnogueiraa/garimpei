@@ -27,6 +27,7 @@
               :createdAt="item.createdAt || new Date().toISOString()"
               :updatedAt="item.updatedAt || new Date().toISOString()"
               :publishedAt="item.publishedAt || new Date().toISOString()"
+              :sellerId="item.sellerId"
               class="col-md-3 mt-2"
             />
 

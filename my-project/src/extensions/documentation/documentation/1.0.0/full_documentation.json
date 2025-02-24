@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2025-02-23T11:57:04.380Z"
+    "x-generation-date": "2025-02-24T12:52:29.986Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -279,6 +279,85 @@
         ],
         "parameters": [],
         "operationId": "post/coupons",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CouponRequest"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Coupon"
+        ],
+        "parameters": [],
+        "operationId": "put/coupons",
         "requestBody": {
           "required": true,
           "content": {
@@ -2919,9 +2998,6 @@
                         "type": "number",
                         "format": "float"
                       },
-                      "quantity": {
-                        "type": "integer"
-                      },
                       "wasSold": {
                         "type": "boolean"
                       },
@@ -3403,7 +3479,7 @@
                       "slug": {
                         "type": "string"
                       },
-                      "users_permissions_user": {
+                      "seller": {
                         "type": "object",
                         "properties": {
                           "id": {
@@ -3696,7 +3772,6 @@
             "required": [
               "name",
               "price",
-              "quantity",
               "image1",
               "tags"
             ],
@@ -3711,9 +3786,6 @@
               "price": {
                 "type": "number",
                 "format": "float"
-              },
-              "quantity": {
-                "type": "integer"
               },
               "wasSold": {
                 "type": "boolean"
@@ -3743,7 +3815,7 @@
               "slug": {
                 "type": "string"
               },
-              "users_permissions_user": {
+              "seller": {
                 "oneOf": [
                   {
                     "type": "integer"
@@ -3825,7 +3897,6 @@
         "required": [
           "name",
           "price",
-          "quantity",
           "image1",
           "tags"
         ],
@@ -3845,9 +3916,6 @@
           "price": {
             "type": "number",
             "format": "float"
-          },
-          "quantity": {
-            "type": "integer"
           },
           "wasSold": {
             "type": "boolean"
@@ -4582,7 +4650,7 @@
           "slug": {
             "type": "string"
           },
-          "users_permissions_user": {
+          "seller": {
             "type": "object",
             "properties": {
               "id": {
@@ -4797,9 +4865,6 @@
                     "price": {
                       "type": "number",
                       "format": "float"
-                    },
-                    "quantity": {
-                      "type": "integer"
                     },
                     "wasSold": {
                       "type": "boolean"
@@ -5065,7 +5130,7 @@
                     "slug": {
                       "type": "string"
                     },
-                    "users_permissions_user": {
+                    "seller": {
                       "type": "object",
                       "properties": {
                         "id": {

@@ -168,8 +168,8 @@ export default defineComponent({
 }
 
 .product-image {
-  max-width: 100%;
-  height: auto;
+  max-width: 600px;
+  height: 460px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
