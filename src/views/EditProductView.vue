@@ -25,11 +25,6 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Quantidade em Estoque</label>
-              <input v-model.number="produto.quantity" type="number" class="form-control" required min="0" />
-            </div>
-
-            <div class="mb-3">
               <label class="form-label">Categoria</label>
               <select v-model="produto.tags" class="form-select" required>
                 <option disabled value="">Selecione uma categoria</option>
@@ -86,8 +81,6 @@ export default defineComponent({
       name: '',
       description: '',
       price: 0,
-      quantity: 0,
-      slug: '',
       wasSold: false,
       tags: ProductCategory.ROUPAS,
       createdAt: '',
@@ -116,8 +109,7 @@ export default defineComponent({
       return (
         produto.value.name.trim() !== '' &&
         produto.value.description.trim() !== '' &&
-        produto.value.price > 0 &&
-        produto.value.quantity >= 0
+        produto.value.price > 0 
       );
     });
 

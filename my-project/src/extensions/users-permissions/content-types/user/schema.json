@@ -69,7 +69,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::product.product",
-      "mappedBy": "users_permissions_user"
+      "mappedBy": "seller"
     }
   }
 }

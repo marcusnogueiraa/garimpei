@@ -27,15 +27,15 @@
           <form @submit.prevent="finalizarCompra">
             <div class="mb-3">
               <label class="form-label">Nome Completo</label>
-              <input v-model="form.nome" type="text" class="form-control" required />
+              <input v-model.trim="form.nome" type="text" class="form-control" required />
             </div>
             <div class="mb-3">
               <label class="form-label">Endereço</label>
-              <input v-model="form.endereco" type="text" class="form-control" required />
+              <input v-model.trim="form.endereco" type="text" class="form-control" required />
             </div>
             <div class="mb-3">
               <label class="form-label">CEP</label>
-              <input v-model="form.cep" type="text" class="form-control" required />
+              <input v-model.trim="form.cep" type="text" class="form-control" required />
             </div>
 
             <h4 class="fw-bold mt-4">Pagamento</h4>
@@ -51,7 +51,9 @@
             <h5 class="fw-bold mt-4">Resumo do Pedido</h5>
             <p><strong>Total:</strong> {{ formatPrice(total) }}</p>
 
-            <button type="submit" class="btn btn-success w-100 mt-3">Finalizar Compra</button>
+            <button type="submit" class="btn btn-success w-100 mt-3" :disabled="loading">
+              {{ loading ? "Processando..." : "Finalizar Compra" }}
+            </button>
           </form>
         </div>
       </div>
@@ -67,7 +69,7 @@ import { useRouter } from 'vue-router';
 import { useCartStore } from '@/store/cart';
 import HeaderComponent from '@/components/header/headerComponent.vue';
 import FooterComponent from '@/components/footer/footerComponent.vue';
-import { Produto } from '@/types/interfaces';
+import api from '@/api/axios'; 
 
 export default defineComponent({
   name: 'CheckoutPage',
@@ -75,6 +77,7 @@ export default defineComponent({
   setup() {
     const cartStore = useCartStore();
     const router = useRouter();
+    const loading = ref(false);
 
     const form = ref({
       nome: '',
@@ -83,7 +86,7 @@ export default defineComponent({
       pagamento: 'pix'
     });
 
-    const cart = computed(() => cartStore.cart as Produto[]);
+    const cart = computed(() => cartStore.cart);
     const total = computed(() => cartStore.cart.reduce((acc, item) => acc + item.price, 0));
 
     const formatPrice = (price: number) => {
@@ -98,18 +101,74 @@ export default defineComponent({
       return image?.url ? `http://localhost:1337${image.url}` : 'https://via.placeholder.com/100';
     };
 
-    const finalizarCompra = () => {
+    const finalizarCompra = async () => {
       if (!form.value.nome || !form.value.endereco || !form.value.cep) {
         alert('Preencha todas as informações de entrega.');
         return;
       }
 
-      alert('Compra realizada com sucesso! 🛒✅');
-      cartStore.clearCart();
-      router.push('/');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user || !user.username) {
+        alert('Usuário não autenticado. Faça login.');
+        return;
+      }
+
+      loading.value = true;
+      const token = localStorage.getItem("token");
+
+      try {
+        for (const item of cart.value) {
+          console.log("Enviando venda:", {
+            date: new Date().toISOString(),
+            buyerUsername: user.username,  
+            sellerUsername: item.seller.username,  
+            total: item.price,
+            paymentMethod: form.value.pagamento,
+            address: form.value.endereco,
+            productName: item.name
+          });
+
+          await api.put(`/products/${item.documentId}`, {
+            data: { wasSold: true }
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          await api.post("/sales", {
+            data: {
+              date: new Date().toISOString(),
+              buyerUsername: user.username,  
+              sellerUsername: item.seller.username,  
+              total: item.price,
+              paymentMethod: form.value.pagamento,
+              address: form.value.endereco,
+              productName: item.name
+            },
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          console.log(`Produto ${item.name} marcado como vendido e venda registrada.`);
+        }
+
+        alert('Compra realizada com sucesso! 🛒✅');
+        cartStore.clearCart();
+        router.push('/');
+      } catch (error) {
+        console.error("Erro ao finalizar compra:", error);
+        alert('Erro ao processar a compra.');
+      } finally {
+        loading.value = false;
+      }
     };
 
-    return { cart, form, total, formatPrice, formatImage, finalizarCompra };
+
+
+    return { cart, form, total, formatPrice, formatImage, finalizarCompra, loading };
   }
 });
 </script>

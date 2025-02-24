@@ -24,11 +24,6 @@
               <input v-model.number="produto.price" type="number" class="form-control" required min="1" />
             </div>
 
-            <div class="row">
-              <label class="form-label">Estoque</label>
-              <input v-model.number="produto.quantity" type="number" class="form-control" required min="1" />
-            </div>
-
             <div class="mb-3">
               <label class="form-label">Tags</label>
               <select v-model="produto.tags" class="form-control" required>
@@ -82,7 +77,6 @@ export default defineComponent({
       name: "",
       description: "",
       price: 0,
-      quantity: 0,
       tags: "" as ProductCategory,
       wasSold: false,
       image1: null as { url: string } | null,
@@ -96,7 +90,6 @@ export default defineComponent({
         produto.value.name.trim() !== "" &&
         produto.value.description.trim() !== "" &&
         produto.value.price > 0 &&
-        produto.value.quantity >= 0 &&
         produto.value.tags !== undefined
       );
     });
@@ -121,7 +114,6 @@ export default defineComponent({
         formData.append("name", produto.value.name);
         formData.append("description", produto.value.description);
         formData.append("price", produto.value.price.toString());
-        formData.append("quantity", produto.value.quantity.toString());
         formData.append("tags", produto.value.tags);
         formData.append("wasSold", produto.value.wasSold.toString());
 

@@ -26,39 +26,29 @@
       "required": true,
       "min": 0
     },
-    "quantity": {
-      "type": "integer",
-      "min": 0,
-      "required": true,
-      "default": 1
-    },
     "wasSold": {
       "type": "boolean",
       "default": false
     },
     "image1": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
       "allowedTypes": [
         "images",
         "files"
-      ],
-      "type": "media",
-      "multiple": false,
-      "required": true
+      ]
     },
     "image2": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files"
-      ],
-      "type": "media",
-      "multiple": false,
-      "required": false
+      ]
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "name"
-    },
-    "users_permissions_user": {
+    "seller": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
