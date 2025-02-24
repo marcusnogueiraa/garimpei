@@ -1,41 +1,44 @@
 <template>
-    <div class="vh-100 d-flex flex-column position-relative">
+    <div class="vh-100 d-flex flex-column">
         <HeaderComponent />
-        <main class="h-100 p-4 animate-spawn">    
+        <main class="flex-grow-1 p-4 animate-spawn">    
             <div class="d-flex mt-4">
                 <aside class="filters">
                     <h4>Filtros</h4>
                     <div>
                         <label>Categoria</label>
-                        <select v-model="selectedCategory" class="form-control">
+                        <select v-model="selectedCategory" class="form-control" @change="updateSearchResults">
                             <option value="">Todas</option>
-                            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+                            <option v-for="category in categories" :key="category" :value="category">
+                                {{ category }}
+                            </option>
                         </select>
                     </div>
                     <div>
                         <label>Preço</label>
-                        <input type="range" v-model="maxPrice" min="0" max="1000" step="10" class="form-control" />
+                        <input type="range" v-model="maxPrice" min="0" max="1000" step="10" class="form-control" @input="updateSearchResults" />
                         <span>Até R$ {{ maxPrice }}</span>
                     </div>
                     <div>
                         <label>Ordenar por</label>
-                        <select v-model="sortBy" class="form-control">
+                        <select v-model="sortBy" class="form-control" @change="updateSearchResults">
                             <option value="relevance">Relevância</option>
                             <option value="price_low">Menor Preço</option>
                             <option value="price_high">Maior Preço</option>
                         </select>
                     </div>
                 </aside>     
+
                 <section class="search-results">
-                    <p>Exibindo resultados para "{{ search }}"...</p>
+                    <p v-if="search">Exibindo resultados para "{{ search }}"...</p>
 
                     <div v-if="filteredProducts.length === 0" class="text-center">
                         <p class="text-muted">Nenhum produto encontrado.</p>
                     </div>
                   
-                      <div class="row mt-4">
+                    <div class="row mt-4">
                         <ProductCard 
-                            v-for="(item, index) in filteredProducts" 
+                            v-for="(item, index) in sortedProducts" 
                             :key="index" 
                             :id="item.id"
                             :name="item.name" 
@@ -45,9 +48,8 @@
                             :description="item.description"
                             :seller="item.seller"
                             class="col-md-3 mt-2"
-                            />
-
-                      </div>
+                        />
+                    </div>
                 </section>
             </div>
         </main>
@@ -58,7 +60,7 @@
 <script lang="ts">
 import FooterComponent from '@/components/footer/footerComponent.vue';
 import HeaderComponent from '@/components/header/headerComponent.vue';
-import productCard from '@/components/card/productCard.vue';
+import ProductCard from '@/components/card/productCard.vue';
 import { defineComponent, ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSearchStore } from '@/store/search';  
@@ -68,7 +70,7 @@ export default defineComponent({
     components: {
         HeaderComponent,
         FooterComponent,
-        productCard
+        ProductCard
     },
     setup() {
         const searchStore = useSearchStore();
@@ -80,7 +82,6 @@ export default defineComponent({
         const maxPrice = ref(1000);
         const sortBy = ref('relevance');
         const categories = ref(['Vestidos', 'Camisetas', 'Calças', 'Jaquetas', 'Bolsas', 'Óculos', 'Tênis']);
-        
 
         onMounted(async () => {
             await productStore.fetchProducts();
@@ -90,7 +91,6 @@ export default defineComponent({
             }
         });
 
-
         watch(() => route.query.q, (newQuery) => {
             if (typeof newQuery === 'string') {
                 searchStore.setSearchQuery(newQuery);
@@ -99,11 +99,36 @@ export default defineComponent({
         });
 
         const filteredProducts = computed(() => {
-            if (!search.value) return productStore.products;
-            return productStore.products.filter((product) =>
-                product.name.toLowerCase().includes(search.value.toLowerCase())
-            );
+            let products = productStore.products;
+
+            if (search.value) {
+                products = products.filter(product =>
+                    product.name.toLowerCase().includes(search.value.toLowerCase())
+                );
+            }
+
+            if (selectedCategory.value) {
+                products = products.filter(product => product.category === selectedCategory.value);
+            }
+
+            products = products.filter(product => product.price <= maxPrice.value);
+
+            return products;
         });
+
+        const sortedProducts = computed(() => {
+            if (sortBy.value === 'price_low') {
+                return [...filteredProducts.value].sort((a, b) => a.price - b.price);
+            }
+            if (sortBy.value === 'price_high') {
+                return [...filteredProducts.value].sort((a, b) => b.price - a.price);
+            }
+            return filteredProducts.value;
+        });
+
+        const updateSearchResults = () => {
+            router.push({ path: '/search', query: { q: search.value } });
+        };
 
         const formatImage = (image: string | { url?: string } | null): string => {
             if (!image) return ''; 
@@ -112,13 +137,29 @@ export default defineComponent({
             return ''; 
         };
 
-        return { search,filteredProducts, formatImage , selectedCategory, maxPrice, sortBy, categories };
+        return { 
+            search,
+            filteredProducts,
+            sortedProducts,
+            updateSearchResults,
+            formatImage, 
+            selectedCategory, 
+            maxPrice, 
+            sortBy, 
+            categories 
+        };
     },
-    
 });
 </script>
 
 <style scoped>
+
+.vh-100 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .filters {
     width: 250px;
     padding: 20px;
@@ -177,14 +218,14 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-.animate-spawn{
+.animate-spawn {
     animation: spawn .2s forwards;
-  }
+}
   
-  @keyframes spawn {
-      from{
+@keyframes spawn {
+    from {
         opacity: 0;
         transform: translateY(-8px);
-      }
-  }
+    }
+}
 </style>

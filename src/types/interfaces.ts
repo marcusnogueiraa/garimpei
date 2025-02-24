@@ -1,7 +1,9 @@
   export enum ProductCategory {
     ROUPAS = "roupas",
     CALCADOS = "calçados",
-    LIVROS = "livros"
+    LIVROS = "livros",
+    FERRAMENTAS = "ferramentas",
+    OUTROS = 'outros'
   }
 
   export interface Produto {
@@ -10,10 +12,9 @@
     name: string;
     description: string;
     price: number;
-    quantity: number;
-    slug: string;
     wasSold: boolean;
     tags: ProductCategory; 
+    seller?: any;
     createdAt: string;  
     updatedAt: string;
     publishedAt: string;
@@ -26,7 +27,7 @@
   export interface Coupon{
     code: string;
     whoUsed: number[]
-    seller: string;
+    sellerUsername: string;
     maxUse: number;
   }
 

@@ -19,8 +19,6 @@
               :name="item.name" 
               :description="item.description"
               :price="item.price" 
-              :quantity="item.quantity || 1"
-              :slug="item.slug || ''"
               :wasSold="item.wasSold || false"
               :tags="item.tags" 
               :image1="formatImage(item.image1)"

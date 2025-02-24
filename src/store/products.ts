@@ -11,15 +11,23 @@ export const useProductStore = defineStore('product', () => {
   async function fetchProducts() {
     loading.value = true;
     try {
-      const response = await api.get('/products?populate=*');
+
+      const response = await api.get('/products', {
+        params: {
+          populate: '*', 
+          'filters[wasSold][$eq]': false, 
+        },
+      });
+  
       if (!response.data || !response.data.data) {
         console.error("A resposta da API não contém a chave 'data'.", response);
         error.value = "Erro ao buscar produtos.";
         return;
       }
 
-      console.log(response.data.data)
-      products.value = response.data.data; 
+  
+      products.value = response.data.data;
+
       console.log("Produtos carregados:", products.value);
     } catch (err) {
       console.error('Erro ao buscar produtos:', err);
@@ -28,6 +36,7 @@ export const useProductStore = defineStore('product', () => {
       loading.value = false;
     }
   }
+  
 
   async function fetchProductById(id: number) {
     loading.value = true;

@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sales",
+  "info": {
+    "singularName": "sale",
+    "pluralName": "sales",
+    "displayName": "Sale",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "date": {
+      "type": "datetime"
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": [
+        "pix",
+        "cartao",
+        "boleto"
+      ]
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "productName": {
+      "type": "string",
+      "required": true
+    },
+    "total": {
+      "type": "integer",
+      "required": true
+    },
+    "buyerUsername": {
+      "type": "string",
+      "required": true
+    },
+    "sellerUsername": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

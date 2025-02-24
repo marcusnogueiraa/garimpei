@@ -7,6 +7,13 @@ export const useCartStore = defineStore('cart', {
   }),
   actions: {
     addCartItem(item: Produto) {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      if (item.seller.username == user.username){
+       alert("Você não pode comprar seu próprio item!");
+       return;
+      }
+      
       if (!this.cart.some(cartItem => cartItem.id === item.id)) {
         this.cart.push(item);
         localStorage.setItem('cart', JSON.stringify(this.cart));

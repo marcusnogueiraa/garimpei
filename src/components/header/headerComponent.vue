@@ -97,9 +97,9 @@ export default defineComponent({
     const { requireLogin } = useAuthGuard();
     
     const categorias = reactive([
-      { nome: "Roupas", ativo: false, tipos: ["Vestidos", "Camisetas", "Calças", "Jaquetas"] },
-      { nome: "Acessórios", ativo: false, tipos: ["Bolsas", "Óculos", "Bijuterias", "Relógios"] },
-      { nome: "Calçados", ativo: false, tipos: ["Tênis", "Sandálias", "Botas", "Sapatos"] }
+      { nome: "Roupas", ativo: false, tipos: ["Vestido", "Camiseta", "Calça", "Jaqueta"] },
+      { nome: "Acessórios", ativo: false, tipos: ["Bolsa", "Óculo", "Bijuteria", "Relógio"] },
+      { nome: "Calçados", ativo: false, tipos: ["Tênis", "Sandália", "Bota", "Sapato"] }
     ]);
 
     const searchQuery = ref(searchStore.query); 
